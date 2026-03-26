@@ -30,10 +30,15 @@ class CarListViewModel: ObservableObject {
         let pageToLoad = page ?? currentPage
         
         do {
+            try await Task.sleep(nanoseconds: 5_000_000_000)
             let response = try await repository.list(page: pageToLoad)
-            cars.append(contentsOf: response.data)
+            if pageToLoad == 1 {
+                cars = response.data
+            } else {
+                cars.append(contentsOf: response.data)
+            }
             hasNextPage = response.meta.hasNext
-            cars = response.data
+            currentPage = pageToLoad
         } catch {
             self.error = error.localizedDescription
         }

@@ -20,23 +20,32 @@ struct CarListView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    ForEach(viewModel.cars) { car in
-                        CarCardView(car: car)
-                            .onAppear {
-                                if car == viewModel.cars.last, !viewModel.isLoading, viewModel.hasNextPage {
-                                    Task {
-                                        await viewModel.fetchCars(page: viewModel.currentPage + 1)
+                    if viewModel.isLoading && viewModel.cars.isEmpty {
+                        ForEach(0..<6, id: \.self) { _ in
+                                CarSkeletonCard()
+                        }
+                    } else {
+                        ForEach(viewModel.cars) { car in
+                            CarCardView(car: car)
+                                .onAppear {
+                                    if car == viewModel.cars.last, !viewModel.isLoading, viewModel.hasNextPage {
+                                        Task {
+                                            await viewModel.fetchCars(page: viewModel.currentPage + 1)
+                                        }
                                     }
                                 }
-                            }
+                        }
                     }
-                    
                     if viewModel.isLoading {
                         ProgressView()
                             .padding()
                     }
                 }
                 .padding()
+            }
+            .refreshable {
+                viewModel.cars = []
+                await viewModel.fetchCars(page: 1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("My Cars")

@@ -10,6 +10,7 @@ import SwiftUI
 struct FuelSummaryView: View {
     let averageFuelConsumptionRate: Double
     let carID: String
+    let fuelRepository: FuelRepositoryProtocol
     let recentFuelEntries: [FuelEntry]
     let repository: FuelEntryRepositoryProtocol
 
@@ -20,7 +21,7 @@ struct FuelSummaryView: View {
             
             AverageFuelCard(rate: averageFuelConsumptionRate)
             
-            FuelEntrySummary(carID: carID, recentFuelEntries: recentFuelEntries, repository: repository)
+            FuelEntrySummary(carID: carID, fuelRepository: fuelRepository, recentFuelEntries: recentFuelEntries, repository: repository)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,6 +52,7 @@ private struct AverageFuelCard: View {
 
 private struct FuelEntrySummary: View {
     let carID: String
+    let fuelRepository: FuelRepositoryProtocol
     let recentFuelEntries: [FuelEntry]
     let repository: FuelEntryRepositoryProtocol
     
@@ -81,7 +83,7 @@ private extension FuelEntrySummary {
             Spacer()
 
             NavigationLink {
-                FuelEntryCreateView(carID: carID, repository: repository)
+                FuelEntryCreateView(carID: carID, fuelRepository: fuelRepository, repository: repository)
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.headline)
@@ -122,5 +124,5 @@ private struct FuelRow: View {
 }
 
 #Preview {
-    FuelSummaryView(averageFuelConsumptionRate: CarDetailResponse.mockCar.averageFuelConsumptionRate, carID: "", recentFuelEntries: CarDetailResponse.mockRecentFuelEntries, repository: MockFuelEntryRepository())
+    FuelSummaryView(averageFuelConsumptionRate: CarDetailResponse.mockCar.averageFuelConsumptionRate, carID: "", fuelRepository: MockFuelRepository(), recentFuelEntries: CarDetailResponse.mockRecentFuelEntries, repository: MockFuelEntryRepository())
 }

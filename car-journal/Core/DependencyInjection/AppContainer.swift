@@ -29,6 +29,10 @@ final class AppContainer {
         CarRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()
     
+    lazy var fuelRepository: FuelRepositoryProtocol = {
+        FuelRepositoryImpl(apiClient: apiClient, authManager: authManager)
+    }()
+    
     lazy var fuelEntryRepository: FuelEntryRepositoryProtocol = {
         FuelEntryRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()

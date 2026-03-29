@@ -10,27 +10,34 @@ import Combine
 
 @MainActor
 class FuelEntryViewModel: ObservableObject {
+    @Published var fuels: [FuelListResponse] = []
+    @Published var fuelNames: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    
+    @Published var isLoadingFuelList = false
+    @Published var errorMessageFuelList: String?
     
     @Published var didCreateSuccessfully = false
     
     @Published var odometerReading = ""
-    @Published var readingUnit = ""
+    @Published var readingUnit = "km"
     @Published var fuelType = ""
     @Published var fuelBrand = ""
     @Published var fuelName = ""
     @Published var fuelPrice = ""
-    @Published var fuelUnit = ""
+    @Published var fuelUnit = "liter"
     @Published var distanceTraveled = ""
     @Published var volumeFilled = ""
     @Published var notes = ""
     
     private let carID: String
+    let fuelRepository: FuelRepositoryProtocol
     private let repository: FuelEntryRepositoryProtocol
     
-    init(carID: String, repository: FuelEntryRepositoryProtocol) {
+    init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
         self.carID = carID
+        self.fuelRepository = fuelRepository
         self.repository = repository
     }
     
@@ -48,7 +55,7 @@ class FuelEntryViewModel: ObservableObject {
             volumeFilled: Double(volumeFilled) ?? 0,
             notes: notes.isEmpty ? nil : notes
         )
-        print(payload)
+        
         guard payload.validate() else {
             errorMessage = "Please fill in all the fields"
             return
@@ -63,9 +70,27 @@ class FuelEntryViewModel: ObservableObject {
             didCreateSuccessfully = true
         } catch {
             #if DEBUG
-            print("error in creating fuel entry")
+            print("error in creating fuel entry", error)
             #endif
             errorMessage = "Failed to create fuel entry. Please try again later"
+        }
+    }
+    
+    func listFuel(name: String) async {
+        fuels = []
+        fuelNames = []
+        isLoadingFuelList = true
+        errorMessageFuelList = nil
+        defer { isLoadingFuelList = false }
+        
+        do {
+            let response = try await fuelRepository.list(name: name)
+            fuels = response.data
+            for fuel in response.data {
+                fuelNames.append(fuel.name)
+            }
+        } catch {
+            self.errorMessageFuelList = error.localizedDescription
         }
     }
 }

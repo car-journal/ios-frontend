@@ -10,11 +10,13 @@ import SwiftUI
 struct CarListView: View {
     @ObservedObject var authManager: AuthManager
     @StateObject private var viewModel: CarListViewModel
+    let fuelRepository: FuelRepositoryProtocol
     let fuelEntryRepository: FuelEntryRepositoryProtocol
     let repository: CarRepositoryProtocol
     
-    init(authManager: AuthManager, fuelEntryRepository: FuelEntryRepositoryProtocol, repository: CarRepositoryProtocol) {
+    init(authManager: AuthManager, fuelRepository: FuelRepositoryProtocol, fuelEntryRepository: FuelEntryRepositoryProtocol, repository: CarRepositoryProtocol) {
         self.authManager = authManager
+        self.fuelRepository = fuelRepository
         self.fuelEntryRepository = fuelEntryRepository
         self.repository = repository
         _viewModel = StateObject(wrappedValue: CarListViewModel(repository: repository))
@@ -59,6 +61,7 @@ struct CarListView: View {
             .navigationDestination(for: UUID.self) { carID in
                 CarDetailView(
                     carID: carID.uuidString,
+                    fuelRepository: fuelRepository,
                     fuelEntryRepository: fuelEntryRepository,
                     repository: repository
                 )
@@ -78,5 +81,5 @@ struct CarListView: View {
 }
 
 #Preview {
-    CarListView(authManager: AuthManager(), fuelEntryRepository: MockFuelEntryRepository(), repository: MockCarRepository())
+    CarListView(authManager: AuthManager(), fuelRepository: MockFuelRepository(), fuelEntryRepository: MockFuelEntryRepository(), repository: MockCarRepository())
 }

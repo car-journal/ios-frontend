@@ -11,9 +11,10 @@ struct FuelEntryCreateView: View {
     @StateObject private var viewModel: FuelEntryViewModel
     @Environment(\.dismiss) private var dismiss
     
-    init(carID: String, repository: FuelEntryRepositoryProtocol) {
+    init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
         _viewModel = StateObject(wrappedValue: FuelEntryViewModel(
             carID: carID,
+            fuelRepository: fuelRepository,
             repository: repository
         ))
     }
@@ -49,7 +50,7 @@ struct FuelEntryCreateView: View {
 
 #Preview {
     NavigationStack {
-        FuelEntryCreateView(carID: "", repository: MockFuelEntryRepository())
+        FuelEntryCreateView(carID: "", fuelRepository: MockFuelRepository(), repository: MockFuelEntryRepository())
     }
 }
 
@@ -81,11 +82,7 @@ private extension FuelEntryCreateView {
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Fuel Name", text: $viewModel.fuelName)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
+            FuelNameDropdown(fuelName: $viewModel.fuelName, viewModel: viewModel)
             
             TextField("Fuel Price (Rp)", text: $viewModel.fuelPrice)
                 .keyboardType(.decimalPad)

@@ -9,11 +9,13 @@ import SwiftUI
 
 struct CarDetailView: View {
     let carID: String
+    let fuelRepository: FuelRepositoryProtocol
     let fuelEntryRepository: FuelEntryRepositoryProtocol
     @StateObject private var viewModel: CarDetailViewModel
     
-    init(carID: String, fuelEntryRepository: FuelEntryRepositoryProtocol, repository: CarRepositoryProtocol) {
+    init(carID: String, fuelRepository: FuelRepositoryProtocol,  fuelEntryRepository: FuelEntryRepositoryProtocol, repository: CarRepositoryProtocol) {
         self.carID = carID
+        self.fuelRepository = fuelRepository
         self.fuelEntryRepository = fuelEntryRepository
         _viewModel = StateObject(wrappedValue: CarDetailViewModel(repository: repository))
     }
@@ -27,7 +29,7 @@ struct CarDetailView: View {
                     CarDetailCardView(car: car)
                 }
                 
-                FuelSummaryView(averageFuelConsumptionRate: viewModel.car?.averageFuelConsumptionRate ?? 0, carID: carID, recentFuelEntries: viewModel.car?.recentFuelEntries ?? [], repository: fuelEntryRepository)
+                FuelSummaryView(averageFuelConsumptionRate: viewModel.car?.averageFuelConsumptionRate ?? 0, carID: carID, fuelRepository: fuelRepository, recentFuelEntries: viewModel.car?.recentFuelEntries ?? [], repository: fuelEntryRepository)
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
@@ -46,6 +48,7 @@ struct CarDetailView: View {
     NavigationStack {
         CarDetailView(
             carID: UUID().uuidString,
+            fuelRepository: MockFuelRepository(),
             fuelEntryRepository: MockFuelEntryRepository(),
             repository: MockCarRepository()
         )

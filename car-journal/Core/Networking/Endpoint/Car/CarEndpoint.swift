@@ -9,6 +9,7 @@ import Foundation
 
 enum CarEndpoint: Endpoint {
     case list(page: Int, token: String)
+    case findByID(carID: String, token: String)
 }
 
 extension CarEndpoint {
@@ -16,6 +17,8 @@ extension CarEndpoint {
         switch self {
         case .list:
             return "/v1/internal/cars"
+        case let .findByID(carID, _):
+            return "/v1/internal/cars/\(carID)"
         }
     }
     
@@ -23,12 +26,18 @@ extension CarEndpoint {
         switch self {
         case .list:
             return .get
+        case .findByID:
+            return .get
         }
     }
     
     var headers: [String : String]? {
         switch self {
         case let .list(_, token):
+            return [
+                "Authorization": "Bearer \(token)"
+            ]
+        case let .findByID(_, token):
             return [
                 "Authorization": "Bearer \(token)"
             ]
@@ -45,6 +54,8 @@ extension CarEndpoint {
             return [
                 URLQueryItem(name: "page", value: "\(page)")
             ]
+        case .findByID:
+            return nil
         }
     }
 }

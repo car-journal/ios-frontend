@@ -12,18 +12,20 @@ struct RootView: View {
     let container: AppContainer
     
     var body: some View {
-        if authManager.isLoggedIn {
-            CarListView(
-                authManager: authManager,
-                repository: container.carRepository
-            )
-        } else {
-            LoginView(
-                viewModel: LoginViewModel(
-                    authManager: container.authManager,
-                    repository: container.authRepository
+        NavigationStack {
+            if authManager.isLoggedIn {
+                CarListView(
+                    authManager: authManager,
+                    repository: container.carRepository
                 )
-            )
+            } else {
+                LoginView(
+                    viewModel: LoginViewModel(
+                        authManager: container.authManager,
+                        repository: container.authRepository
+                    )
+                )
+            }
         }
     }
 }

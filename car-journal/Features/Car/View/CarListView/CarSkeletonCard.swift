@@ -11,13 +11,16 @@ struct CarSkeletonCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.7))
                 .frame(height: 20)
             
             RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.7))
                 .frame(height: 16)
                 .frame(maxWidth: 200)
             
             RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.7))
                 .frame(height: 16)
                 .frame(maxWidth: 120)
         }

@@ -12,12 +12,22 @@ struct CarCardView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("\(car.brand) \(car.model)")
-                .font(.title3)
-                .fontWeight(.semibold)
+            HStack {
+                Text("\(car.brand) \(car.model)")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                Spacer()
+                Label {
+                    Text(Formatter.kmPerLiter(car.averageFuelConsumptionRate))
+                        .font(.subheadline)
+                } icon: {
+                    Image(systemName: "fuelpump.fill")
+                        .font(.title3)
+                }
+            }
             
             HStack {
-                Label(String(car.manufactureYear), systemImage: "calendar")
+                Label(String((car.manufactureYear ?? 1990)), systemImage: "calendar")
                 Spacer()
                 Label(car.color, systemImage: "paintpalette")
             }
@@ -29,7 +39,7 @@ struct CarCardView: View {
             HStack {
                 Text("Engine")
                 Spacer()
-                Text(String(car.cylinderCapacity))
+                Text(String(car.cylinderCapacity ?? 1990))
                     .fontWeight(.medium)
             }
             
@@ -46,4 +56,8 @@ struct CarCardView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
     }
+}
+
+#Preview {
+    CarCardView(car: CarListResponse.mockCar)
 }

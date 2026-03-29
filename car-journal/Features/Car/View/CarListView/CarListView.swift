@@ -10,30 +10,35 @@ import SwiftUI
 struct CarListView: View {
     @ObservedObject var authManager: AuthManager
     @StateObject private var viewModel: CarListViewModel
+    let repository: CarRepository
     
     init(authManager: AuthManager, repository: CarRepository) {
         self.authManager = authManager
+        self.repository = repository
         _viewModel = StateObject(wrappedValue: CarListViewModel(repository: repository))
     }
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 16) {
+                LazyVStack(spacing: 16, pinnedViews: []) {
                     if viewModel.isLoading && viewModel.cars.isEmpty {
                         ForEach(0..<6, id: \.self) { _ in
                                 CarSkeletonCard()
                         }
                     } else {
                         ForEach(viewModel.cars) { car in
-                            CarCardView(car: car)
-                                .onAppear {
-                                    if car == viewModel.cars.last, !viewModel.isLoading, viewModel.hasNextPage {
-                                        Task {
-                                            await viewModel.fetchCars(page: viewModel.currentPage + 1)
+                            NavigationLink(value: car.id) {
+                                CarCardView(car: car)
+                                    .onAppear {
+                                        if car == viewModel.cars.last, !viewModel.isLoading, viewModel.hasNextPage {
+                                            Task {
+                                                await viewModel.fetchCars(page: viewModel.currentPage + 1)
+                                            }
                                         }
                                     }
-                                }
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     if viewModel.isLoading {
@@ -49,6 +54,12 @@ struct CarListView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("My Cars")
+            .navigationDestination(for: UUID.self) { carID in
+                CarDetailView(
+                    carID: carID.uuidString,
+                    repository: repository
+                )
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Logout") { authManager.logout() }

@@ -9,5 +9,6 @@ import Foundation
 
 protocol CarRepository {
     func list(page: Int) async throws -> PaginatedResponse<CarListResponse>
+    func findByID(carID: String) async throws -> CarDetailResponse
 }
 

@@ -14,8 +14,8 @@ struct CarListResponse: Decodable, Identifiable, Equatable {
     let deletedAt: Date?
     let brand: String
     let model: String
-    let manufactureYear: Int
-    let cylinderCapacity: Int
+    let manufactureYear: Int?
+    let cylinderCapacity: Int?
     let color: String
     let fuelType: String
     let averageFuelConsumptionRate: Double

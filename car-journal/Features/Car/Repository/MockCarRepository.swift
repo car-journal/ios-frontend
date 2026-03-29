@@ -41,4 +41,9 @@ final class MockCarRepository: CarRepository {
 
         return PaginatedResponse(data: mockCars, meta: meta)
     }
+    
+    func findByID(carID: String) async throws -> CarDetailResponse {
+        let mockCar: CarDetailResponse = CarDetailResponse.mockCar
+        return mockCar
+    }
 }

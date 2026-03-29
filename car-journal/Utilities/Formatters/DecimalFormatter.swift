@@ -18,4 +18,9 @@ struct DecimalFormatter {
                 .locale(locale)
         )
     }
+    
+    static func rounded(_ value: Double, fractionLength: Int = 2) -> Double {
+        let multiplier = pow(10.0, Double(fractionLength))
+        return (value * multiplier).rounded() / multiplier
+    }
 }

@@ -16,6 +16,7 @@ struct RootView: View {
             if authManager.isLoggedIn {
                 CarListView(
                     authManager: authManager,
+                    fuelEntryRepository: container.fuelEntryRepository,
                     repository: container.carRepository
                 )
             } else {

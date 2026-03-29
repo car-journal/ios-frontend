@@ -21,11 +21,15 @@ final class AppContainer {
         APIClient(baseURL: baseURL)
     }()
     
-    lazy var authRepository: AuthRepository = {
+    lazy var authRepository: AuthRepositoryProtocol = {
         AuthRepositoryImpl(apiClient: apiClient)
     }()
     
-    lazy var carRepository: CarRepository = {
+    lazy var carRepository: CarRepositoryProtocol = {
         CarRepositoryImpl(apiClient: apiClient, authManager: authManager)
+    }()
+    
+    lazy var fuelEntryRepository: FuelEntryRepositoryProtocol = {
+        FuelEntryRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()
 }

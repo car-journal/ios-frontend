@@ -9,10 +9,12 @@ import SwiftUI
 
 struct CarDetailView: View {
     let carID: String
+    let fuelEntryRepository: FuelEntryRepositoryProtocol
     @StateObject private var viewModel: CarDetailViewModel
     
-    init(carID: String, repository: CarRepository) {
+    init(carID: String, fuelEntryRepository: FuelEntryRepositoryProtocol, repository: CarRepositoryProtocol) {
         self.carID = carID
+        self.fuelEntryRepository = fuelEntryRepository
         _viewModel = StateObject(wrappedValue: CarDetailViewModel(repository: repository))
     }
     
@@ -25,7 +27,7 @@ struct CarDetailView: View {
                     CarDetailCardView(car: car)
                 }
                 
-                FuelSummaryView(averageFuelConsumptionRate: viewModel.car?.averageFuelConsumptionRate ?? 0, recentFuelEntries: viewModel.car?.recentFuelEntries ?? [])
+                FuelSummaryView(averageFuelConsumptionRate: viewModel.car?.averageFuelConsumptionRate ?? 0, carID: carID, recentFuelEntries: viewModel.car?.recentFuelEntries ?? [], repository: fuelEntryRepository)
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
@@ -44,6 +46,7 @@ struct CarDetailView: View {
     NavigationStack {
         CarDetailView(
             carID: UUID().uuidString,
+            fuelEntryRepository: MockFuelEntryRepository(),
             repository: MockCarRepository()
         )
     }

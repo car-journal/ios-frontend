@@ -14,9 +14,9 @@ final class LoginViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let authManager: AuthManager
-    private let repository: AuthRepository
+    private let repository: AuthRepositoryProtocol
     
-    init(authManager: AuthManager, repository: AuthRepository) {
+    init(authManager: AuthManager, repository: AuthRepositoryProtocol) {
         self.repository = repository
         self.authManager = authManager
     }
@@ -46,7 +46,9 @@ final class LoginViewModel: ObservableObject {
             authManager.saveToken(token)
             
         } catch let error {
+            #if DEBUG
             print("error in logging in:", error)
+            #endif
             errorMessage = "Failed to login. Please try again later."
         }
     }

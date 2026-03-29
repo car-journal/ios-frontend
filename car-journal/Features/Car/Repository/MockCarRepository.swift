@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MockCarRepository: CarRepository {
+final class MockCarRepository: CarRepositoryProtocol {
     func list(page: Int) async throws -> PaginatedResponse<CarListResponse> {
         let mockCars: [CarListResponse]
         let meta: PaginationMeta

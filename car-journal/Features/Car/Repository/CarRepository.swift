@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol CarRepository {
+protocol CarRepositoryProtocol {
     func list(page: Int) async throws -> PaginatedResponse<CarListResponse>
     func findByID(carID: String) async throws -> CarDetailResponse
 }

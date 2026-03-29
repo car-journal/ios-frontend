@@ -26,16 +26,15 @@ extension AuthEndpoint {
         }
     }
     
-    var body: Data? {
+    var body: (any Encodable)? {
         switch self {
         case let .login(email, password):
-            let request = LoginRequest(
+            return LoginRequest(
                 email: email,
                 password: password,
                 passwordConfirmation: password,
                 clientSecret: "local_secret" // create env variable
             )
-            return try? JSONEncoder().encode(request)
         }
     }
 }

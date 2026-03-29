@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MockAuthRepository: AuthRepository {
+final class MockAuthRepository: AuthRepositoryProtocol {
     func login(email: String, password: String) async throws -> LoginResponse {
         return LoginResponse(
             accessToken: "mock_access_token_123",

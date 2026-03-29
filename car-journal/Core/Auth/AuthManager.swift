@@ -8,11 +8,7 @@
 import Foundation
 import Combine
 
-@MainActor
 final class AuthManager: ObservableObject {
-
-    static let shared = AuthManager()
-
     @Published private(set) var token: AuthToken?
 
     private let tokenStore: TokenStore
@@ -42,5 +38,16 @@ final class AuthManager: ObservableObject {
 
     func getAccessToken() -> String? {
         token?.accessToken
+    }
+    
+    func requireAccessToken() throws -> String {
+        guard let token = getAccessToken() else {
+            #if DEBUG
+            print("No access token, user is not logged in")
+            #endif
+            throw AuthManagerError.noAccessToken
+        }
+        
+        return token
     }
 }

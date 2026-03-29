@@ -14,11 +14,11 @@ class CarListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
 
-    private let repository: CarRepository
+    private let repository: CarRepositoryProtocol
     var currentPage = 1
     var hasNextPage = true
 
-    init(repository: CarRepository) {
+    init(repository: CarRepositoryProtocol) {
         self.repository = repository
     }
 

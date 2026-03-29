@@ -5,7 +5,7 @@
 //  Created by Rayendra Timotius Sabandar on 23/03/26.
 //
 
-final class AuthRepositoryImpl: AuthRepository {
+final class AuthRepositoryImpl: AuthRepositoryProtocol {
     private let apiClient: APIClient
     
     init(apiClient: APIClient) {

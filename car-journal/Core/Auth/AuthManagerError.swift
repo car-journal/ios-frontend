@@ -5,6 +5,6 @@
 //  Created by Rayendra Timotius Sabandar on 25/03/26.
 //
 
-enum CarRepositoryError: Error {
+enum AuthManagerError: Error {
     case noAccessToken
 }

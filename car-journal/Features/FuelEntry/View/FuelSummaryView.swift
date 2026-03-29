@@ -9,8 +9,10 @@ import SwiftUI
 
 struct FuelSummaryView: View {
     let averageFuelConsumptionRate: Double
+    let carID: String
     let recentFuelEntries: [FuelEntry]
-    
+    let repository: FuelEntryRepositoryProtocol
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Fuel Summary")
@@ -18,7 +20,7 @@ struct FuelSummaryView: View {
             
             AverageFuelCard(rate: averageFuelConsumptionRate)
             
-            FuelEntrySummary(recentFuelEntries: recentFuelEntries)
+            FuelEntrySummary(carID: carID, recentFuelEntries: recentFuelEntries, repository: repository)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -48,13 +50,13 @@ private struct AverageFuelCard: View {
 }
 
 private struct FuelEntrySummary: View {
+    let carID: String
     let recentFuelEntries: [FuelEntry]
+    let repository: FuelEntryRepositoryProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent Fuel Logs")
-                .font(.subheadline)
-                .fontWeight(.semibold)
+            recentFuelLogsHeader
             
             ForEach(Array(recentFuelEntries.enumerated()), id: \.element.id) { index, entry in
                 FuelRow(fuelEntry: entry)
@@ -66,6 +68,28 @@ private struct FuelEntrySummary: View {
             }
         }
         .frame(maxWidth: .infinity,)
+    }
+}
+
+private extension FuelEntrySummary {
+    var recentFuelLogsHeader: some View {
+        HStack {
+            Text("Recent Fuel Logs")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+
+            Spacer()
+
+            NavigationLink {
+                FuelEntryCreateView(carID: carID, repository: repository)
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .font(.headline)
+                    .padding(8)
+                    .background(Color.blue.opacity(0.15))
+                    .clipShape(Circle())
+            }
+        }
     }
 }
 
@@ -98,5 +122,5 @@ private struct FuelRow: View {
 }
 
 #Preview {
-    FuelSummaryView(averageFuelConsumptionRate: CarDetailResponse.mockCar.averageFuelConsumptionRate, recentFuelEntries: CarDetailResponse.mockRecentFuelEntries)
+    FuelSummaryView(averageFuelConsumptionRate: CarDetailResponse.mockCar.averageFuelConsumptionRate, carID: "", recentFuelEntries: CarDetailResponse.mockRecentFuelEntries, repository: MockFuelEntryRepository())
 }

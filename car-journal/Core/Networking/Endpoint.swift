@@ -12,16 +12,17 @@ protocol Endpoint {
     var method: HTTPMethod { get }
     var headers: [String: String]? { get }
     var queryItems: [URLQueryItem]? { get }
-    var body: Data? { get }
+    var body: (any Encodable)? { get }
     
-    func makeRequest(baseURL: URL) throws -> URLRequest
+    func makeRequest(baseURL: URL, encoder: JSONEncoder) throws -> URLRequest
 }
 
 extension Endpoint {
     var headers: [String: String]? { nil }
     var queryItems: [URLQueryItem]? { nil }
-    
-    func makeRequest(baseURL: URL) throws -> URLRequest {
+    var body: (any Encodable)? { nil }
+
+    func makeRequest(baseURL: URL, encoder: JSONEncoder = .apiEncoder) throws -> URLRequest {
         var url = baseURL.appendingPathComponent(path)
 
         if let queryItems {
@@ -32,7 +33,6 @@ extension Endpoint {
 
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        request.httpBody = body
 
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
@@ -40,10 +40,14 @@ extension Endpoint {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
+        print(body)
+        if let body {
+            request.httpBody = try encoder.encode(AnyEncodable(body))
+            print(request.httpBody)
+        }
+
         return request
     }
-    
-    var body: Data? { nil }
 }
 
 enum HTTPMethod: String {
@@ -51,4 +55,16 @@ enum HTTPMethod: String {
     case post = "POST"
     case put = "PUT"
     case delete = "DELETE"
+}
+
+struct AnyEncodable: Encodable {
+    private let encodeFunc: (Encoder) throws -> Void
+
+    init(_ encodable: Encodable) {
+        self.encodeFunc = encodable.encode
+    }
+
+    func encode(to encoder: Encoder) throws {
+        try encodeFunc(encoder)
+    }
 }

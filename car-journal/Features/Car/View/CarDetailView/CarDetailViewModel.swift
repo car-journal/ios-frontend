@@ -14,9 +14,9 @@ class CarDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     
-    private let repository: CarRepository
+    private let repository: CarRepositoryProtocol
     
-    init(repository: CarRepository) {
+    init(repository: CarRepositoryProtocol) {
         self.repository = repository
     }
     

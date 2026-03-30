@@ -44,7 +44,6 @@ class CarDetailViewModel: ObservableObject {
 
     
     func findByID(carID: String) async {
-        guard !isLoading else { return }
         error = nil
         isLoading = true
         defer { isLoading = false }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FuelEntryCreateView: View {
     @StateObject private var viewModel: FuelEntryViewModel
+    @EnvironmentObject var carDetailViewModel: CarDetailViewModel
     @Environment(\.dismiss) private var dismiss
     
     init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
@@ -41,9 +42,11 @@ struct FuelEntryCreateView: View {
         }
         .navigationTitle("New Fuel Entry")
         .onChange(of: viewModel.didCreateSuccessfully) { _, success in
-            if success {
-                dismiss()
+            guard success else { return }
+            Task {
+                await carDetailViewModel.refresh(carID: viewModel.carID)
             }
+            dismiss()
         }
     }
 }
@@ -97,7 +100,7 @@ private extension FuelEntryCreateView {
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Distance Travelled", text: $viewModel.distanceTraveled)
+            TextField("Distance Traveled", text: $viewModel.distanceTraveled)
                 .keyboardType(.decimalPad)
                 .autocapitalization(.none)
                 .padding()

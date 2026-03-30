@@ -31,7 +31,7 @@ class FuelEntryViewModel: ObservableObject {
     @Published var volumeFilled = ""
     @Published var notes = ""
     
-    private let carID: String
+    let carID: String
     let fuelRepository: FuelRepositoryProtocol
     private let repository: FuelEntryRepositoryProtocol
     var currentPage = 1

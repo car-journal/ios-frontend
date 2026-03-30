@@ -35,6 +35,7 @@ struct CarDetailView: View {
             .padding(.horizontal)
             .padding(.top)
         }
+        .environmentObject(viewModel)
         .navigationTitle(
             viewModel.car.map { "\($0.brand) \($0.model)" } ?? "Car Detail"
         )

@@ -24,7 +24,6 @@ final class MockFuelEntryViewModel: FuelEntryViewModel {
         
         do {
             let response = try await fuelRepository.list(name: name, page: page ?? 1, limit: limit)
-            // Use the repository data to fill fuelNames
             fuelNames = response.data.map { $0.name }
         } catch {
             errorMessageFuelList = error.localizedDescription

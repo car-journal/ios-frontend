@@ -16,7 +16,7 @@ struct Formatter {
         DecimalFormatter.number(value, fractionLength: 2) + " L"
     }
     
-    static func distanceTravelledKm(_ value: Double) -> String {
+    static func distanceTraveledKm(_ value: Double) -> String {
         DecimalFormatter.number(value, fractionLength: 2) + " Km"
     }
 }

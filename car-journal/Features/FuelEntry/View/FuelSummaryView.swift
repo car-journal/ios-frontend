@@ -55,6 +55,7 @@ private struct FuelEntrySummary: View {
     let fuelRepository: FuelRepositoryProtocol
     let recentFuelEntries: [FuelEntry]
     let repository: FuelEntryRepositoryProtocol
+    @EnvironmentObject var carDetailViewModel: CarDetailViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -84,6 +85,7 @@ private extension FuelEntrySummary {
 
             NavigationLink {
                 FuelEntryCreateView(carID: carID, fuelRepository: fuelRepository, repository: repository)
+                    .environmentObject(carDetailViewModel)
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.headline)
@@ -91,6 +93,7 @@ private extension FuelEntrySummary {
                     .background(Color.blue.opacity(0.15))
                     .clipShape(Circle())
             }
+            
         }
     }
 }
@@ -103,7 +106,7 @@ private struct FuelRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(fuelEntry.createdAt, style: .date)
                     .font(.subheadline)
-                Text(Formatter.distanceTravelledKm(fuelEntry.distanceTraveled))
+                Text(Formatter.distanceTraveledKm(fuelEntry.distanceTraveled))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

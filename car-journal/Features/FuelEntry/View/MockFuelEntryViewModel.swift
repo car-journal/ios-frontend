@@ -17,13 +17,13 @@ final class MockFuelEntryViewModel: FuelEntryViewModel {
         super.init(carID: "mock-car-id", fuelRepository: mockFuelRepo, repository: mockFuelEntryRepo)
     }
     
-    override func listFuel(name: String) async {
+    override func listFuel(name: String, page: Int?, limit: Int) async {
         isLoadingFuelList = true
         errorMessageFuelList = nil
         defer { isLoadingFuelList = false }
         
         do {
-            let response = try await fuelRepository.list(name: name)
+            let response = try await fuelRepository.list(name: name, page: page ?? 1, limit: limit)
             // Use the repository data to fill fuelNames
             fuelNames = response.data.map { $0.name }
         } catch {

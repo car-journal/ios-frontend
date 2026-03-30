@@ -26,25 +26,31 @@ final class APIClient {
     }
     
     func send<T: Decodable>(_ endpoint: Endpoint) async throws -> T {
-        let request = try endpoint.makeRequest(baseURL: baseURL, encoder: encoder)
-        
-        let (data, response) = try await session.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
+        do {
+            let request = try endpoint.makeRequest(baseURL: baseURL, encoder: encoder)
+            
+            let (data, response) = try await session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            
+            #if DEBUG
+            if let raw = String(data: data, encoding: .utf8) {
+                print("Raw response:", raw)
+            }
+            #endif
+            
+            guard 200..<300 ~= httpResponse.statusCode else {
+                throw NetworkError.serverError(httpResponse.statusCode)
+            }
+            return try decodeResponse(data, as: T.self)
+        } catch {
+            #if DEBUG
+            print("error send:", error)
+            #endif
+            throw error
         }
-        
-        #if DEBUG
-        if let raw = String(data: data, encoding: .utf8) {
-            print("Raw response:", raw)
-        }
-        #endif
-        
-        guard 200..<300 ~= httpResponse.statusCode else {
-            throw NetworkError.serverError(httpResponse.statusCode)
-        }
-        
-        return try decodeResponse(data, as: T.self)
     }
     
     private func decodeResponse<T: Decodable>(_ data: Data, as type: T.Type) throws -> T {

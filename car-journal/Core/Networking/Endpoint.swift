@@ -40,10 +40,8 @@ extension Endpoint {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
-        print(body)
         if let body {
             request.httpBody = try encoder.encode(AnyEncodable(body))
-            print(request.httpBody)
         }
 
         return request

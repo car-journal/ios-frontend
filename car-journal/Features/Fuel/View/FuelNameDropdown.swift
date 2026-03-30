@@ -9,8 +9,7 @@ import SwiftUI
 
 struct FuelNameDropdown: View {
     @Binding var fuelName: String
-    @State private var suggestions: [String] = []
-    @State private var suggestions2: [FuelListResponse] = []
+    @State private var suggestions: [FuelListResponse] = []
     @State private var showDropdown = false
     var viewModel: FuelEntryViewModel
     
@@ -30,11 +29,9 @@ struct FuelNameDropdown: View {
 //                }
 //            }
             .onSubmit {
-                print("onSubmit called")
                 Task {
-                    await viewModel.listFuel(name: fuelName)
-                    suggestions = viewModel.fuelNames
-                    suggestions2 = viewModel.fuels
+                    await viewModel.listFuel(name: fuelName, page: 1)
+                    suggestions = viewModel.fuels
                     showDropdown = true
                 }
             }
@@ -42,7 +39,7 @@ struct FuelNameDropdown: View {
             if showDropdown && !suggestions.isEmpty {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        ForEach(suggestions2, id: \.id) { suggestion in
+                        ForEach(suggestions, id: \.id) { suggestion in
                             Text(suggestion.name)
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)

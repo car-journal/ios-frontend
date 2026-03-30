@@ -14,10 +14,10 @@ final class FuelRepositoryImpl: FuelRepositoryProtocol {
         self.authManager = authManager
     }
     
-    func list(name: String) async throws -> PaginatedResponse<FuelListResponse> {
+    func list(name: String, page: Int, limit: Int) async throws -> PaginatedResponse<FuelListResponse> {
         do {
             let token = try authManager.requireAccessToken()
-            let endpoint = FuelEndpoint.list(name: name, token: token)
+            let endpoint = FuelEndpoint.list(name: name, page: page, limit: limit, token: token)
             return try await apiClient.send(endpoint)
         } catch {
             throw error

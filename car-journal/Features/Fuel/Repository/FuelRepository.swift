@@ -6,5 +6,5 @@
 //
 
 protocol FuelRepositoryProtocol {
-    func list(name: String) async throws -> PaginatedResponse<FuelListResponse>
+    func list(name: String, page: Int, limit: Int) async throws -> PaginatedResponse<FuelListResponse>
 }

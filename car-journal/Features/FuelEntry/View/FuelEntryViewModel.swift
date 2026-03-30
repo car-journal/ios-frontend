@@ -34,6 +34,8 @@ class FuelEntryViewModel: ObservableObject {
     private let carID: String
     let fuelRepository: FuelRepositoryProtocol
     private let repository: FuelEntryRepositoryProtocol
+    var currentPage = 1
+    var hasNextPage = true
     
     init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
         self.carID = carID
@@ -76,15 +78,17 @@ class FuelEntryViewModel: ObservableObject {
         }
     }
     
-    func listFuel(name: String) async {
+    func listFuel(name: String, page: Int?, limit: Int = 10) async {
         fuels = []
         fuelNames = []
         isLoadingFuelList = true
         errorMessageFuelList = nil
         defer { isLoadingFuelList = false }
         
+        let pageToLoad = page ?? currentPage
+        
         do {
-            let response = try await fuelRepository.list(name: name)
+            let response = try await fuelRepository.list(name: name, page: pageToLoad, limit: limit)
             fuels = response.data
             for fuel in response.data {
                 fuelNames.append(fuel.name)

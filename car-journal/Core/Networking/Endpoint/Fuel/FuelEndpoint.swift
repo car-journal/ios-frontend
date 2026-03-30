@@ -8,7 +8,7 @@
 import Foundation
 
 enum FuelEndpoint: Endpoint {
-    case list(name: String, token: String)
+    case list(name: String, page: Int, limit: Int, token: String)
 }
 
 extension FuelEndpoint {
@@ -28,7 +28,7 @@ extension FuelEndpoint {
     
     var headers: [String : String]? {
         switch self {
-        case let .list(_, token):
+        case let .list(_, _, _, token):
             return [
                 "Authorization": "Bearer \(token)"
             ]
@@ -41,9 +41,11 @@ extension FuelEndpoint {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case let .list(name, _):
+        case let .list(name, page, limit, _):
             return [
-                URLQueryItem(name: "name", value: "\(name)")
+                URLQueryItem(name: "name", value: "\(name)"),
+                URLQueryItem(name: "page", value: "\(page)"),
+                URLQueryItem(name: "limit", value: "\(limit)")
             ]
         }
     }

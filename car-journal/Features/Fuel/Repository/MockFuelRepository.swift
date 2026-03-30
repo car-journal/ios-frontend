@@ -8,7 +8,7 @@
 import Foundation
 
 final class MockFuelRepository: FuelRepositoryProtocol {
-    func list(name: String) async throws -> PaginatedResponse<FuelListResponse> {
+    func list(name: String, page: Int, limit: Int) async throws -> PaginatedResponse<FuelListResponse> {
         let mockFuels = FuelListResponse.mockFuels
         let meta = PaginationMeta(
             affectedRecords: mockFuels.count,

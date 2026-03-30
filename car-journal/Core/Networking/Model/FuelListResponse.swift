@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FuelListResponse: Decodable, Identifiable {
+struct FuelListResponse: Decodable, Identifiable, Equatable {
     let id: UUID
     let createdAt: Date
     let updatedAt: Date

@@ -25,11 +25,11 @@ struct CarDetailView: View {
             VStack(spacing: 24) {
                 if viewModel.isLoading {
                     CarSkeletonCard()
+                    CarSkeletonCard()
                 } else if let car = viewModel.car {
                     CarDetailCardView(car: car)
+                    FuelSummaryView(averageFuelConsumptionRate: car.averageFuelConsumptionRate, carID: carID, fuelRepository: fuelRepository, recentFuelEntries: car.recentFuelEntries, repository: fuelEntryRepository)
                 }
-                
-                FuelSummaryView(averageFuelConsumptionRate: viewModel.car?.averageFuelConsumptionRate ?? 0, carID: carID, fuelRepository: fuelRepository, recentFuelEntries: viewModel.car?.recentFuelEntries ?? [], repository: fuelEntryRepository)
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
@@ -38,8 +38,11 @@ struct CarDetailView: View {
         .navigationTitle(
             viewModel.car.map { "\($0.brand) \($0.model)" } ?? "Car Detail"
         )
-        .task(id: carID) {
-            await viewModel.findByID(carID: carID)
+        .task {
+            await viewModel.initialLoad(carID: carID)
+        }
+        .refreshable {
+            await viewModel.refresh(carID: carID)
         }
     }
 }

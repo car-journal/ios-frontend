@@ -23,7 +23,12 @@ struct CarDetailResponse: Decodable, Identifiable, Equatable {
     let fuelType: String
     let registrationYear: String?
     let vehicleOwnershipDocumentNumber: String?
+    let fuelSummary: FuelSummary
+}
+
+struct FuelSummary: Decodable, Equatable {
     let averageFuelConsumptionRate: Double
+    let fuelConsumptionRateTrend: Double?
     let recentFuelEntries: [FuelEntry]
 }
 

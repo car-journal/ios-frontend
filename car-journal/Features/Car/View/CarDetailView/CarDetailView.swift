@@ -28,7 +28,7 @@ struct CarDetailView: View {
                     CarSkeletonCard()
                 } else if let car = viewModel.car {
                     CarDetailCardView(car: car)
-                    FuelSummaryView(averageFuelConsumptionRate: car.averageFuelConsumptionRate, carID: carID, fuelRepository: fuelRepository, recentFuelEntries: car.recentFuelEntries, repository: fuelEntryRepository)
+                    FuelSummaryView(carID: carID, fuelRepository: fuelRepository, fuelSummary: car.fuelSummary, repository: fuelEntryRepository)
                 }
             }
             .frame(maxWidth: .infinity)

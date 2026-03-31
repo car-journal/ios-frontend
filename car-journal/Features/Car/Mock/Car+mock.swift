@@ -24,7 +24,12 @@ extension CarDetailResponse {
         fuelType: "Petrol",
         registrationYear: nil,
         vehicleOwnershipDocumentNumber: nil,
+        fuelSummary: mockFuelSummary
+    )
+    
+    static let mockFuelSummary: FuelSummary = FuelSummary(
         averageFuelConsumptionRate: 7.5,
+        fuelConsumptionRateTrend: 0.2,
         recentFuelEntries: mockRecentFuelEntries
     )
     

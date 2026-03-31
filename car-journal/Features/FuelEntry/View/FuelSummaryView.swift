@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct FuelSummaryView: View {
-    let averageFuelConsumptionRate: Double
     let carID: String
     let fuelRepository: FuelRepositoryProtocol
-    let recentFuelEntries: [FuelEntry]
+    let fuelSummary: FuelSummary
     let repository: FuelEntryRepositoryProtocol
 
     var body: some View {
@@ -19,9 +18,9 @@ struct FuelSummaryView: View {
             Text("Fuel Summary")
                 .font(.headline)
             
-            AverageFuelCard(rate: averageFuelConsumptionRate)
+            AverageFuelCard(rate: fuelSummary.averageFuelConsumptionRate, trend: fuelSummary.fuelConsumptionRateTrend)
             
-            FuelEntrySummary(carID: carID, fuelRepository: fuelRepository, recentFuelEntries: recentFuelEntries, repository: repository)
+            FuelEntrySummary(carID: carID, fuelRepository: fuelRepository, recentFuelEntries: fuelSummary.recentFuelEntries, repository: repository)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -32,12 +31,37 @@ struct FuelSummaryView: View {
 
 private struct AverageFuelCard: View {
     let rate: Double
+    let trend: Double?
+    
+    private var trendColor: Color {
+        guard let trend else { return .secondary }
+        if trend > 0 { return .green }
+        if trend < 0 { return .red }
+        return .secondary
+    }
+    
+    private var trendIcon: String {
+        guard let trend else { return "" }
+        if trend > 0 { return "arrow.up" }
+        if trend < 0 { return "arrow.down" }
+        return "minus"
+    }
     
     var body: some View {
         VStack(spacing: 8) {
             Text(Formatter.kmPerLiter(rate))
                 .font(.largeTitle)
                 .fontWeight(.bold)
+            
+            if let trend {
+                HStack(spacing: 4) {
+                    Image(systemName: trendIcon)
+//                    Text(String(format: "%.2f km/L", abs(trend)))
+                    Text(Formatter.kmPerLiter(trend))
+                }
+                .font(.caption)
+                .foregroundStyle(trendColor)
+            }
             
             Text("Average Consumption")
                 .font(.caption)
@@ -127,5 +151,5 @@ private struct FuelRow: View {
 }
 
 #Preview {
-    FuelSummaryView(averageFuelConsumptionRate: CarDetailResponse.mockCar.averageFuelConsumptionRate, carID: "", fuelRepository: MockFuelRepository(), recentFuelEntries: CarDetailResponse.mockRecentFuelEntries, repository: MockFuelEntryRepository())
+    FuelSummaryView(carID: "", fuelRepository: MockFuelRepository(), fuelSummary: CarDetailResponse.mockFuelSummary, repository: MockFuelEntryRepository())
 }

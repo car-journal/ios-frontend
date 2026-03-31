@@ -19,6 +19,7 @@ struct FuelNameDropdown: View {
                 
             }
             HStack {
+                // TODO: handle lazy load for more than 1 page
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
                     .onTapGesture {

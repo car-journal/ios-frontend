@@ -33,18 +33,18 @@ private struct AverageFuelCard: View {
     let rate: Double
     let trend: Double?
     
-    private var trendColor: Color {
-        guard let trend else { return .secondary }
-        if trend > 0 { return .green }
-        if trend < 0 { return .red }
-        return .secondary
+    private struct TrendStyle {
+        let icon: String
+        let color: Color
     }
     
-    private var trendIcon: String {
-        guard let trend else { return "" }
-        if trend > 0 { return "arrow.up" }
-        if trend < 0 { return "arrow.down" }
-        return "minus"
+    private var trendStyle: TrendStyle? {
+        guard let trend else { return nil }
+        
+        if trend > 0 { return TrendStyle(icon: "arrow.up", color: .green )}
+        if trend < 0 { return TrendStyle(icon: "arrow.down", color: .red )}
+        
+        return TrendStyle(icon: "minus", color: .secondary)
     }
     
     var body: some View {
@@ -53,14 +53,13 @@ private struct AverageFuelCard: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            if let trend {
+            if let trend, let style = trendStyle {
                 HStack(spacing: 4) {
-                    Image(systemName: trendIcon)
-//                    Text(String(format: "%.2f km/L", abs(trend)))
+                    Image(systemName: style.icon)
                     Text(Formatter.kmPerLiter(trend))
                 }
                 .font(.caption)
-                .foregroundStyle(trendColor)
+                .foregroundStyle(style.color)
             }
             
             Text("Average Consumption")

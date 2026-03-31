@@ -10,6 +10,7 @@ import Foundation
 enum CarEndpoint: Endpoint {
     case list(page: Int, token: String)
     case findByID(carID: String, token: String)
+    case listOfFuelEntries(carID: String, page: Int, limit: Int, token: String)
 }
 
 extension CarEndpoint {
@@ -19,6 +20,8 @@ extension CarEndpoint {
             return "/v1/internal/cars"
         case let .findByID(carID, _):
             return "/v1/internal/cars/\(carID)"
+        case let .listOfFuelEntries(carID, page, limit, _):
+            return "/v1/internal/cars/\(carID)/fuel-entries?page=\(page)&limit=\(limit)"
         }
     }
     
@@ -27,6 +30,8 @@ extension CarEndpoint {
         case .list:
             return .get
         case .findByID:
+            return .get
+        case .listOfFuelEntries:
             return .get
         }
     }
@@ -38,6 +43,10 @@ extension CarEndpoint {
                 "Authorization": "Bearer \(token)"
             ]
         case let .findByID(_, token):
+            return [
+                "Authorization": "Bearer \(token)"
+            ]
+        case let .listOfFuelEntries(_, _, _, token):
             return [
                 "Authorization": "Bearer \(token)"
             ]
@@ -55,6 +64,8 @@ extension CarEndpoint {
                 URLQueryItem(name: "page", value: "\(page)")
             ]
         case .findByID:
+            return nil
+        case .listOfFuelEntries:
             return nil
         }
     }

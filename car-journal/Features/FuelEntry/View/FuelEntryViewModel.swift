@@ -10,10 +10,14 @@ import Combine
 
 @MainActor
 class FuelEntryViewModel: ObservableObject {
+    @Published var fuelEntriesByCarID: [FuelEntry] = []
     @Published var fuels: [FuelListResponse] = []
     @Published var fuelNames: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    
+    @Published var isLoadingFuelEntriesByCarID = false
+    @Published var errorMessageFuelEntriesByCarID: String?
     
     @Published var isLoadingFuelList = false
     @Published var errorMessageFuelList: String?
@@ -36,6 +40,9 @@ class FuelEntryViewModel: ObservableObject {
     private let repository: FuelEntryRepositoryProtocol
     var currentPage = 1
     var hasNextPage = true
+    
+    var currentPageFuelEntriesByID = 1
+    var hasNextPageFuelEntriesByID = true
     
     init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
         self.carID = carID
@@ -95,6 +102,22 @@ class FuelEntryViewModel: ObservableObject {
             }
         } catch {
             self.errorMessageFuelList = error.localizedDescription
+        }
+    }
+    
+    func listByCarID(carID: String, page: Int?, limit: Int = 10) async {
+        fuelEntriesByCarID = []
+        isLoadingFuelEntriesByCarID = true
+        errorMessageFuelEntriesByCarID = nil
+        defer { isLoadingFuelEntriesByCarID = false }
+        
+        let pageToLoad = page ?? currentPageFuelEntriesByID
+        
+        do {
+            let response = try await repository.listByCarID(carID: carID, page: pageToLoad, limit: limit)
+            fuelEntriesByCarID = response.data
+        } catch {
+            self.errorMessageFuelEntriesByCarID = error.localizedDescription
         }
     }
 }

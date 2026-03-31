@@ -7,4 +7,5 @@
 
 protocol FuelEntryRepositoryProtocol {
     func create(payload: FuelEntryCreateRequest) async throws -> MutationResponse
+    func listByCarID(carID: String, page: Int, limit: Int) async throws -> PaginatedResponse<FuelEntry>
 }

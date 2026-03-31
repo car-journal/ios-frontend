@@ -23,4 +23,14 @@ final class FuelEntryRepositoryImpl: FuelEntryRepositoryProtocol {
             throw error
         }
     }
+    
+    func listByCarID(carID: String, page: Int, limit: Int) async throws -> PaginatedResponse<FuelEntry> {
+        do {
+            let token = try authManager.requireAccessToken()
+            let endpoint = CarEndpoint.listOfFuelEntries(carID: carID, page: page, limit: limit, token: token)
+            return try await apiClient.send(endpoint)
+        } catch {
+            throw error
+        }
+    }
 }

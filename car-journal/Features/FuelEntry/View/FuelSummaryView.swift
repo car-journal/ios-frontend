@@ -49,14 +49,14 @@ private struct AverageFuelCard: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            Text(Formatter.kmPerLiter(rate))
+            Text(FuelFormatter.kmPerLiter(rate))
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
             if let trend, let style = trendStyle {
                 HStack(spacing: 4) {
                     Image(systemName: style.icon)
-                    Text(Formatter.kmPerLiter(trend))
+                    Text(FuelFormatter.kmPerLiter(trend))
                 }
                 .font(.caption)
                 .foregroundStyle(style.color)
@@ -76,7 +76,7 @@ private struct AverageFuelCard: View {
 private struct FuelEntrySummary: View {
     let carID: String
     let fuelRepository: FuelRepositoryProtocol
-    let recentFuelEntries: [FuelEntry]
+    let recentFuelEntries: [FuelEntryResponse]
     let repository: FuelEntryRepositoryProtocol
     @EnvironmentObject var carDetailViewModel: CarDetailViewModel
     
@@ -84,14 +84,11 @@ private struct FuelEntrySummary: View {
         VStack(alignment: .leading, spacing: 12) {
             recentFuelLogsHeader
             
-            ForEach(Array(recentFuelEntries.enumerated()), id: \.element.id) { index, entry in
-                FuelRow(fuelEntry: entry)
-                    .padding(.vertical, 4)
-
-                if index < recentFuelEntries.count - 1 {
-                    Divider()
-                }
-            }
+            FuelEntryListComponentView(
+                fuelEntries: recentFuelEntries,
+                fuelRepository: fuelRepository,
+                fuelEntryRepository: repository
+            )
         }
         .frame(maxWidth: .infinity,)
     }
@@ -121,33 +118,6 @@ private extension FuelEntrySummary {
     }
 }
 
-private struct FuelRow: View {
-    let fuelEntry: FuelEntry
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(fuelEntry.createdAt, style: .date)
-                    .font(.subheadline)
-                Text(Formatter.distanceTraveledKm(fuelEntry.distanceTraveled))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(Formatter.kmPerLiter(fuelEntry.fuelConsumption))
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                
-                Text(Formatter.volumeLiter(fuelEntry.volumeFilled))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-}
 
 #Preview {
     FuelSummaryView(carID: "", fuelRepository: MockFuelRepository(), fuelSummary: CarDetailResponse.mockFuelSummary, repository: MockFuelEntryRepository())

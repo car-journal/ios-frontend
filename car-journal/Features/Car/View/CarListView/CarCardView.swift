@@ -18,7 +18,7 @@ struct CarCardView: View {
                     .fontWeight(.semibold)
                 Spacer()
                 Label {
-                    Text(Formatter.kmPerLiter(car.averageFuelConsumptionRate))
+                    Text(FuelFormatter.kmPerLiter(car.averageFuelConsumptionRate))
                         .font(.subheadline)
                 } icon: {
                     Image(systemName: "fuelpump.fill")

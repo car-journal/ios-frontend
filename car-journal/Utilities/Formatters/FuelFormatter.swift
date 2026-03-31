@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Formatter {
+struct FuelFormatter {
     static func kmPerLiter(_ value: Double) -> String {
         DecimalFormatter.number(value, fractionLength: 2) + " Km/L"
     }

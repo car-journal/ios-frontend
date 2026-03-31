@@ -33,8 +33,8 @@ extension CarDetailResponse {
         recentFuelEntries: mockRecentFuelEntries
     )
     
-    static let mockRecentFuelEntries: [FuelEntry] = [
-        FuelEntry (
+    static let mockRecentFuelEntries: [FuelEntryResponse] = [
+        FuelEntryResponse (
             id: UUID(),
             createdAt: Date(),
             updatedAt: Date(),
@@ -52,7 +52,7 @@ extension CarDetailResponse {
             fuelConsumption: 7.94,
             notes: nil,
         ),
-        FuelEntry (
+        FuelEntryResponse (
             id: UUID(),
             createdAt: Date(),
             updatedAt: Date(),
@@ -70,7 +70,7 @@ extension CarDetailResponse {
             fuelConsumption: 7.94,
             notes: nil,
         ),
-        FuelEntry (
+        FuelEntryResponse (
             id: UUID(),
             createdAt: Date(),
             updatedAt: Date(),
@@ -88,7 +88,7 @@ extension CarDetailResponse {
             fuelConsumption: 7.94,
             notes: nil,
         ),
-        FuelEntry (
+        FuelEntryResponse (
             id: UUID(),
             createdAt: Date(),
             updatedAt: Date(),
@@ -106,7 +106,7 @@ extension CarDetailResponse {
             fuelConsumption: 7.94,
             notes: nil,
         ),
-        FuelEntry (
+        FuelEntryResponse (
             id: UUID(),
             createdAt: Date(),
             updatedAt: Date(),

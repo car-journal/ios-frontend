@@ -10,11 +10,13 @@ import Combine
 
 @MainActor
 class FuelEntryViewModel: ObservableObject {
-    @Published var fuelEntriesByCarID: [FuelEntry] = []
+    @Published var fuelEntry: FuelEntryResponse?
+    @Published var fuelEntriesByCarID: [FuelEntryResponse] = []
     @Published var fuels: [FuelListResponse] = []
     @Published var fuelNames: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var didCreateSuccessfully = false
     
     @Published var isLoadingFuelEntriesByCarID = false
     @Published var errorMessageFuelEntriesByCarID: String?
@@ -22,7 +24,8 @@ class FuelEntryViewModel: ObservableObject {
     @Published var isLoadingFuelList = false
     @Published var errorMessageFuelList: String?
     
-    @Published var didCreateSuccessfully = false
+    @Published var isLoadingFindByID = false
+    @Published var errorMessageFindByID: String?
     
     @Published var odometerReading = ""
     @Published var readingUnit = "km"
@@ -35,6 +38,7 @@ class FuelEntryViewModel: ObservableObject {
     @Published var volumeFilled = ""
     @Published var notes = ""
     
+    // TODO: remove carID from init, set as Published var instead
     let carID: String
     let fuelRepository: FuelRepositoryProtocol
     private let repository: FuelEntryRepositoryProtocol
@@ -75,8 +79,8 @@ class FuelEntryViewModel: ObservableObject {
         defer { isLoading = false }
         
         do {
-            try await repository.create(payload: payload)
-            didCreateSuccessfully = true
+            let response = try await repository.create(payload: payload)
+            didCreateSuccessfully = response.success
         } catch {
             #if DEBUG
             print("error in creating fuel entry", error)
@@ -118,6 +122,20 @@ class FuelEntryViewModel: ObservableObject {
             fuelEntriesByCarID = response.data
         } catch {
             self.errorMessageFuelEntriesByCarID = error.localizedDescription
+        }
+    }
+    
+    func findByID(fuelEntryID: String) async {
+        fuelEntry = nil
+        isLoadingFindByID = true
+        errorMessageFindByID = nil
+        defer { isLoadingFindByID = false }
+        
+        do {
+            let response = try await repository.findByID(fuelEntryID: fuelEntryID)
+            fuelEntry = response
+        } catch {
+            self.errorMessageFindByID = error.localizedDescription
         }
     }
 }

@@ -29,10 +29,10 @@ struct CarDetailResponse: Decodable, Identifiable, Equatable {
 struct FuelSummary: Decodable, Equatable {
     let averageFuelConsumptionRate: Double
     let fuelConsumptionRateTrend: Double?
-    let recentFuelEntries: [FuelEntry]
+    let recentFuelEntries: [FuelEntryResponse]
 }
 
-struct FuelEntry: Decodable, Identifiable, Equatable {
+struct FuelEntryResponse: Decodable, Identifiable, Equatable {
     let id: UUID
     let createdAt: Date
     let updatedAt: Date
@@ -42,7 +42,7 @@ struct FuelEntry: Decodable, Identifiable, Equatable {
     let fuelType: String
     let fuelBrand: String
     let fuelName: String
-    let fuelPrice: Int
+    let fuelPrice: Decimal
     let fuelUnit: String
     let distanceTraveled: Double
     let volumeFilled: Double

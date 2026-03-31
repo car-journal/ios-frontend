@@ -14,8 +14,8 @@ struct CarDetailCardView: View {
     var body: some View {
         VStack(spacing: 1) {
             TabView(selection: $page) {
-                firstCard.tag(0)
-                secondCard.tag(1)
+                firstCard.tag(0).padding()
+                secondCard.tag(1).padding()
             }
             .frame(height: 220)
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -80,7 +80,7 @@ private extension View {
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color(.systemBackground))
-                    .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
             )
     }
 }

@@ -15,26 +15,45 @@ struct FuelNameDropdown: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            TextField("Fuel Name", text: $fuelName)
-            .autocapitalization(.none)
+            HStack {
+                
+            }
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                    .onTapGesture {
+                        Task {
+                            await viewModel.listFuel(name: fuelName, page: 1)
+                            await MainActor.run {
+                                suggestions = viewModel.fuels
+                                showDropdown = true
+                            }
+                        }
+                    }
+
+                TextField("Fuel Name", text: $fuelName)
+                    .autocapitalization(.none)
+                    .onSubmit {
+                        Task {
+                            await viewModel.listFuel(name: fuelName, page: 1)
+                            await MainActor.run {
+                                suggestions = viewModel.fuels
+                                showDropdown = true
+                            }
+                        }
+                    }
+
+                Spacer()
+
+                Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
+                    .foregroundStyle(.secondary)
+                    .onTapGesture {
+                        showDropdown.toggle()
+                    }
+            }
             .padding()
             .background(Color(.systemGray6))
             .cornerRadius(10)
-//            .onChange(of: fuelName) { _, newValue in
-//                print("newValue:", newValue)
-//                Task {
-//                    await viewModel.listFuel(name: newValue)
-//                    suggestions = viewModel.fuelNames
-//                    showDropdown = true
-//                }
-//            }
-            .onSubmit {
-                Task {
-                    await viewModel.listFuel(name: fuelName, page: 1)
-                    suggestions = viewModel.fuels
-                    showDropdown = true
-                }
-            }
             
             if showDropdown && !suggestions.isEmpty {
                 ScrollView {
@@ -66,7 +85,7 @@ struct FuelNameDropdown: View {
 }
 
 #Preview {
-    @State var selectedFuelName = ""
+    @Previewable @State var selectedFuelName = ""
     let mockViewModel = MockFuelEntryViewModel()
     
     NavigationStack {

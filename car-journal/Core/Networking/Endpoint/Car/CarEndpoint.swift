@@ -11,6 +11,8 @@ enum CarEndpoint: Endpoint {
     case list(page: Int, token: String)
     case findByID(carID: String, token: String)
     case listOfFuelEntries(carID: String, page: Int, limit: Int, token: String)
+    // TODO: create update case
+    case update(data)
 }
 
 extension CarEndpoint {

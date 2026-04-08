@@ -27,16 +27,18 @@ class FuelEntryViewModel: ObservableObject {
     @Published var isLoadingFindByID = false
     @Published var errorMessageFindByID: String?
     
-    @Published var odometerReading = ""
-    @Published var readingUnit = "km"
-    @Published var fuelType = ""
-    @Published var fuelBrand = ""
-    @Published var fuelName = ""
-    @Published var fuelPrice = ""
-    @Published var fuelUnit = "liter"
-    @Published var distanceTraveled = ""
-    @Published var volumeFilled = ""
-    @Published var notes = ""
+    @Published var form = FuelEntryForm()
+//    @Published var odometerReading = ""
+//    @Published var readingUnit = "km"
+//    @Published var fuelType = ""
+//    @Published var fuelBrand = ""
+//    @Published var fuelName = ""
+//    @Published var fuelPrice = ""
+//    @Published var fuelUnit = "liter"
+//    @Published var distanceTraveled = ""
+//    @Published var volumeFilled = ""
+//    @Published var filledAt = ""
+//    @Published var notes = ""
     
     // TODO: remove carID from init, set as Published var instead
     let carID: String
@@ -55,25 +57,12 @@ class FuelEntryViewModel: ObservableObject {
     }
     
     func create() async {
-        let payload = FuelEntryCreateRequest(
-            odometerReading: Int(odometerReading) ?? 0,
-            readingUnit: readingUnit,
-            carID: carID,
-            fuelType: fuelType,
-            fuelBrand: fuelBrand,
-            fuelName: fuelName,
-            fuelPrice: Double(fuelPrice) ?? 0,
-            fuelUnit: fuelUnit,
-            distanceTraveled: Double(distanceTraveled) ?? 0,
-            volumeFilled: Double(volumeFilled) ?? 0,
-            notes: notes.isEmpty ? nil : notes
-        )
-        
-        guard payload.validate() else {
-            errorMessage = "Please fill in all the fields"
+        if let error = form.validate() {
+            errorMessage = error
             return
         }
         
+        let payload = form.toRequest(carID: carID)
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }

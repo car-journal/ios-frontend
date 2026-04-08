@@ -46,6 +46,7 @@ struct FuelEntryResponse: Decodable, Identifiable, Equatable {
     let fuelUnit: String
     let distanceTraveled: Double
     let volumeFilled: Double
+    let filledAt: Date
     let totalPrice: Decimal
     let fuelConsumption: Double
     let notes: String?

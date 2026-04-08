@@ -13,7 +13,7 @@ struct FuelEntryCardComponentView: View {
     var body: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(fuelEntry.createdAt, style: .date)
+                Text(fuelEntry.filledAt, style: .date)
                     .font(.subheadline)
                 Text(FuelFormatter.distanceTraveledKm(fuelEntry.distanceTraveled))
                     .font(.caption)

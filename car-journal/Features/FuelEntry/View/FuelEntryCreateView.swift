@@ -60,61 +60,70 @@ struct FuelEntryCreateView: View {
 private extension FuelEntryCreateView {
     var formSection: some View {
         VStack(spacing: 16) {
-            TextField("Odometer Reading", text: $viewModel.odometerReading)
+            TextField("Odometer Reading", text: $viewModel.form.odometerReading)
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Reading Unit (km)", text: $viewModel.readingUnit)
+            TextField("Reading Unit (km)", text: $viewModel.form.readingUnit)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Fuel Type", text: $viewModel.fuelType)
+            TextField("Fuel Type", text: $viewModel.form.fuelType)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Fuel Brand", text: $viewModel.fuelBrand)
+            TextField("Fuel Brand", text: $viewModel.form.fuelBrand)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            FuelNameDropdown(fuelName: $viewModel.fuelName, viewModel: viewModel)
+            FuelNameDropdown(fuelName: $viewModel.form.fuelName, viewModel: viewModel)
             
-            TextField("Fuel Price (Rp)", text: $viewModel.fuelPrice)
+            TextField("Fuel Price (Rp)", text: $viewModel.form.fuelPrice)
                 .keyboardType(.decimalPad)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Fuel Unit (liter)", text: $viewModel.fuelUnit)
+            TextField("Fuel Unit (liter)", text: $viewModel.form.fuelUnit)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Distance Traveled", text: $viewModel.distanceTraveled)
+            TextField("Distance Traveled", text: $viewModel.form.distanceTraveled)
                 .keyboardType(.decimalPad)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Volume Filled (liter)", text: $viewModel.volumeFilled)
+            TextField("Volume Filled (liter)", text: $viewModel.form.volumeFilled)
                 .keyboardType(.decimalPad)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
             
-            TextField("Notes (optional)", text: $viewModel.notes)
+            DatePicker(
+                "Filled At",
+                selection: $viewModel.form.filledAt,
+                displayedComponents: .date
+            )
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            
+            TextField("Notes (optional)", text: $viewModel.form.notes)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.systemGray6))

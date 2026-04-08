@@ -67,9 +67,9 @@ struct FuelNameDropdown: View {
                                 .onTapGesture {
                                     showDropdown = false
                                     fuelName = suggestion.name
-                                    viewModel.fuelType = suggestion.type
-                                    viewModel.fuelBrand = suggestion.brand
-                                    viewModel.fuelPrice = DecimalFormatter.number(suggestion.price)
+                                    viewModel.form.fuelType = suggestion.type
+                                    viewModel.form.fuelBrand = suggestion.brand
+                                    viewModel.form.fuelPrice = DecimalFormatter.number(suggestion.price)
                                 }
                             Divider()
                         }

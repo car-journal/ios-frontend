@@ -17,7 +17,7 @@ final class APIClient {
         baseURL: URL,
         session: URLSession = .shared,
         decoder: JSONDecoder = .apiDecoder,
-        encoder: JSONEncoder = .apiEncoder
+        encoder: JSONEncoder = .apiEncoder()
     ){
         self.baseURL = baseURL
         self.session = session

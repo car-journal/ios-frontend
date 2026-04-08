@@ -8,6 +8,7 @@
 import Foundation
 
 extension FuelEntryCreateRequest {
+    static let mockFilledAt = ISO8601DateFormatter().date(from: "2023-11-30T00:00:00Z")!
     static let mockFuelEntry: FuelEntryCreateRequest = FuelEntryCreateRequest(
         odometerReading: 28000,
         readingUnit: "km",
@@ -19,11 +20,13 @@ extension FuelEntryCreateRequest {
         fuelUnit: "liter",
         distanceTraveled: 369.5,
         volumeFilled: 46.5,
+        filledAt: mockFilledAt,
         notes: nil
     )
 }
 
 extension FuelEntryResponse {
+    static let mockFilledAt = ISO8601DateFormatter().date(from: "2023-11-30T00:00:00Z")!
     static let mockFuelEntry = FuelEntryResponse(
         id: UUID(),
         createdAt: Date(),
@@ -38,6 +41,7 @@ extension FuelEntryResponse {
         fuelUnit: "liter",
         distanceTraveled: 369.5,
         volumeFilled: 46.5,
+        filledAt: mockFilledAt,
         totalPrice: 316200,
         fuelConsumption: 7.94,
         notes: nil,
@@ -58,6 +62,7 @@ extension FuelEntryResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -76,6 +81,7 @@ extension FuelEntryResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -94,6 +100,7 @@ extension FuelEntryResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -112,6 +119,7 @@ extension FuelEntryResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -130,6 +138,7 @@ extension FuelEntryResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,

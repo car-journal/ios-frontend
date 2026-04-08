@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FuelEntryCreateRequest: Encodable {
+struct FuelEntryUpdateRequest: Encodable {
     let odometerReading: Int
     let readingUnit: String
     let carID: String
@@ -18,6 +18,6 @@ struct FuelEntryCreateRequest: Encodable {
     let fuelUnit: String
     let distanceTraveled: Double
     let volumeFilled: Double
-    let filledAt: Date
+    let filledAt: String
     let notes: String?
 }

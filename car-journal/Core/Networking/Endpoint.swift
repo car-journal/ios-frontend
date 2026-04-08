@@ -22,7 +22,7 @@ extension Endpoint {
     var queryItems: [URLQueryItem]? { nil }
     var body: (any Encodable)? { nil }
 
-    func makeRequest(baseURL: URL, encoder: JSONEncoder = .apiEncoder) throws -> URLRequest {
+    func makeRequest(baseURL: URL, encoder: JSONEncoder = .apiEncoder()) throws -> URLRequest {
         var url = baseURL.appendingPathComponent(path)
 
         if let queryItems {

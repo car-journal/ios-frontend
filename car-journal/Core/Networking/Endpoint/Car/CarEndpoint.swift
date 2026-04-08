@@ -12,7 +12,7 @@ enum CarEndpoint: Endpoint {
     case findByID(carID: String, token: String)
     case listOfFuelEntries(carID: String, page: Int, limit: Int, token: String)
     // TODO: create update case
-    case update(data)
+//    case update(data)
 }
 
 extension CarEndpoint {
@@ -22,8 +22,8 @@ extension CarEndpoint {
             return "/v1/internal/cars"
         case let .findByID(carID, _):
             return "/v1/internal/cars/\(carID)"
-        case let .listOfFuelEntries(carID, page, limit, _):
-            return "/v1/internal/cars/\(carID)/fuel-entries?page=\(page)&limit=\(limit)"
+        case let .listOfFuelEntries(carID, _, _, _):
+            return "/v1/internal/cars/\(carID)/fuel-entries"
         }
     }
     
@@ -39,23 +39,21 @@ extension CarEndpoint {
     }
     
     var headers: [String : String]? {
+        let token: String
+        
         switch self {
-        case let .list(_, token):
-            return [
-                "Authorization": "Bearer \(token)"
-            ]
-        case let .findByID(_, token):
-            return [
-                "Authorization": "Bearer \(token)"
-            ]
-        case let .listOfFuelEntries(_, _, _, token):
-            return [
-                "Authorization": "Bearer \(token)"
-            ]
+        case let .list(_, t),
+             let .findByID(_, t),
+             let .listOfFuelEntries(_, _, _, t):
+            token = t
         }
+        
+        return [
+            "Authorization": "Bearer \(token)"
+        ]
     }
     
-    var body: Data? {
+    var body: (any Encodable)? {
         nil
     }
     

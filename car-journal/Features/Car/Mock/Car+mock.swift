@@ -8,6 +8,7 @@
 import Foundation
 
 extension CarDetailResponse {
+    static let mockFilledAt = ISO8601DateFormatter().date(from: "2023-11-30T00:00:00Z")!
     static let mockCar: CarDetailResponse = CarDetailResponse (
         id: UUID(),
         createdAt: Date(),
@@ -48,6 +49,7 @@ extension CarDetailResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -66,6 +68,7 @@ extension CarDetailResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -84,6 +87,7 @@ extension CarDetailResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -102,6 +106,7 @@ extension CarDetailResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
@@ -120,6 +125,7 @@ extension CarDetailResponse {
             fuelUnit: "liter",
             distanceTraveled: 369.5,
             volumeFilled: 46.5,
+            filledAt: mockFilledAt,
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,

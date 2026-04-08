@@ -74,6 +74,12 @@ struct FuelEntryDetailView: View {
                         )
                         
                         DetailRow(
+                            icon: "calendar",
+                            label: "Filled At",
+                            value: DateFormatterUtils.format(fuelEntry.filledAt)
+                        )
+                        
+                        DetailRow(
                             icon: "gauge.with.dots.needle.50percent",
                             label: "Consumption",
                             value: FuelFormatter.kmPerLiter(fuelEntry.fuelConsumption)

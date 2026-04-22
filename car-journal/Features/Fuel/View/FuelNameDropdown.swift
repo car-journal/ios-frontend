@@ -9,88 +9,109 @@ import SwiftUI
 
 struct FuelNameDropdown: View {
     @Binding var fuelName: String
+    @Binding var fuelType: String
+    @Binding var fuelBrand: String
+    @Binding var fuelPrice: String
     @State private var suggestions: [FuelListResponse] = []
     @State private var showDropdown = false
     var viewModel: FuelEntryViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                
-            }
-            HStack {
-                // TODO: handle lazy load for more than 1 page
+            // Search field
+            HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                    .onTapGesture {
-                        Task {
-                            await viewModel.listFuel(name: fuelName, page: 1)
-                            await MainActor.run {
-                                suggestions = viewModel.fuels
-                                showDropdown = true
-                            }
-                        }
-                    }
+                    .font(.appSubheadline)
+                    .foregroundStyle(Color.cjTextSecondary)
+                    .onTapGesture { performSearch() }
 
-                TextField("Fuel Name", text: $fuelName)
+                TextField("Search fuel name", text: $fuelName)
+                    .font(.appBody)
+                    .foregroundStyle(Color.cjTextPrimary)
                     .autocapitalization(.none)
-                    .onSubmit {
-                        Task {
-                            await viewModel.listFuel(name: fuelName, page: 1)
-                            await MainActor.run {
-                                suggestions = viewModel.fuels
-                                showDropdown = true
-                            }
-                        }
-                    }
+                    .onSubmit { performSearch() }
 
                 Spacer()
 
-                Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
-                    .foregroundStyle(.secondary)
-                    .onTapGesture {
-                        showDropdown.toggle()
-                    }
+                Button {
+                    showDropdown.toggle()
+                } label: {
+                    Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.cjTextSecondary)
+                }
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            
+            .appInput()
+
+            // Dropdown results
             if showDropdown && !suggestions.isEmpty {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(suggestions, id: \.id) { suggestion in
-                            Text(suggestion.name)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white)
-                                .onTapGesture {
-                                    showDropdown = false
-                                    fuelName = suggestion.name
-                                    viewModel.form.fuelType = suggestion.type
-                                    viewModel.form.fuelBrand = suggestion.brand
-                                    viewModel.form.fuelPrice = DecimalFormatter.number(suggestion.price)
-                                }
-                            Divider()
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(suggestions, id: \.id) { suggestion in
+                        Button {
+                            showDropdown = false
+                            fuelName = suggestion.name
+                            fuelType = suggestion.type
+                            fuelBrand = suggestion.brand
+                            fuelPrice = DecimalFormatter.number(suggestion.price)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(suggestion.name)
+                                    .font(.appSubheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(Color.cjTextPrimary)
+                                Text("\(suggestion.brand) · \(suggestion.type)")
+                                    .font(.appCaption)
+                                    .foregroundStyle(Color.cjTextSecondary)
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .buttonStyle(.plain)
+
+                        if suggestion.id != suggestions.last?.id {
+                            Divider().padding(.leading, 14)
                         }
                     }
                 }
-                .frame(maxHeight: 150)
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 5)
+                .background(Color.cjSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .shadow(color: Color.appDark.opacity(0.12), radius: 8, x: 0, y: 4)
+                .frame(maxHeight: 180)
+                .padding(.top, 4)
             }
         }
-        .animation(.default, value: suggestions)
+        .animation(.easeInOut(duration: 0.2), value: showDropdown)
+        .animation(.easeInOut(duration: 0.2), value: suggestions.count)
+    }
+
+    private func performSearch() {
+        Task {
+            await viewModel.listFuel(name: fuelName, page: 1)
+            await MainActor.run {
+                suggestions = viewModel.fuels
+                showDropdown = true
+            }
+        }
     }
 }
 
 #Preview {
     @Previewable @State var selectedFuelName = ""
+    @Previewable @State var fuelType = ""
+    @Previewable @State var fuelBrand = ""
+    @Previewable @State var fuelPrice = ""
     let mockViewModel = MockFuelEntryViewModel()
-    
-    NavigationStack {
-        FuelNameDropdown(fuelName: $selectedFuelName, viewModel: mockViewModel)
-            .padding()
+
+    ZStack {
+        Color.cjBackground.ignoresSafeArea()
+        FuelNameDropdown(
+            fuelName: $selectedFuelName,
+            fuelType: $fuelType,
+            fuelBrand: $fuelBrand,
+            fuelPrice: $fuelPrice,
+            viewModel: mockViewModel
+        )
+        .padding()
     }
 }

@@ -10,6 +10,7 @@ import Foundation
 enum FuelEntryEndpoint: Endpoint {
     case create(payload: FuelEntryCreateRequest, token: String)
     case findByID(fuelEntryID: String, token: String)
+    case update(fuelEntryID: String, payload: FuelEntryUpdateRequest, token: String)
 }
 
 extension FuelEntryEndpoint {
@@ -18,6 +19,8 @@ extension FuelEntryEndpoint {
         case .create:
             return "/v1/internal/fuel-entries"
         case let .findByID(fuelEntryID, _):
+            return "/v1/internal/fuel-entries/\(fuelEntryID)"
+        case let .update(fuelEntryID, _, _):
             return "/v1/internal/fuel-entries/\(fuelEntryID)"
         }
     }
@@ -28,6 +31,8 @@ extension FuelEntryEndpoint {
             return .post
         case .findByID:
             return .get
+        case .update:
+            return .patch
         }
     }
     
@@ -41,6 +46,10 @@ extension FuelEntryEndpoint {
             return [
                 "Authorization": "Bearer \(token)"
             ]
+        case let .update(_, _, token):
+            return [
+                "Authorization": "Bearer \(token)"
+            ]
         }
     }
     
@@ -50,6 +59,8 @@ extension FuelEntryEndpoint {
             return payload
         case .findByID:
             return nil
+        case let .update(_, payload, _):
+            return payload
         }
     }
     

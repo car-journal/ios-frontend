@@ -11,7 +11,7 @@ struct FuelEntryCreateView: View {
     @StateObject private var viewModel: FuelEntryViewModel
     @EnvironmentObject var carDetailViewModel: CarDetailViewModel
     @Environment(\.dismiss) private var dismiss
-    
+
     init(carID: String, fuelRepository: FuelRepositoryProtocol, repository: FuelEntryRepositoryProtocol) {
         _viewModel = StateObject(wrappedValue: FuelEntryViewModel(
             carID: carID,
@@ -19,34 +19,109 @@ struct FuelEntryCreateView: View {
             repository: repository
         ))
     }
-    
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                formSection
-                
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .font(.caption)
+        ZStack {
+            Color.cjBackground.ignoresSafeArea()
+
+            ScrollView {
+                VStack(spacing: 20) {
+                    formSection("Odometer", systemImage: "gauge.with.needle") {
+                        AppField("Odometer Reading", text: $viewModel.form.odometerReading)
+                            .keyboardType(.numberPad)
+                        AppField("Reading Unit (km)", text: $viewModel.form.readingUnit)
+                            .textInputAutocapitalization(.none)
+                    }
+
+                    formSection("Fuel", systemImage: "fuelpump.fill") {
+                        FuelNameDropdown(
+                            fuelName: $viewModel.form.fuelName,
+                            fuelType: $viewModel.form.fuelType,
+                            fuelBrand: $viewModel.form.fuelBrand,
+                            fuelPrice: $viewModel.form.fuelPrice,
+                            viewModel: viewModel
+                        )
+                        AppField("Fuel Type", text: $viewModel.form.fuelType)
+                            .textInputAutocapitalization(.none)
+                        AppField("Fuel Brand", text: $viewModel.form.fuelBrand)
+                            .textInputAutocapitalization(.none)
+                        AppField("Fuel Price (Rp)", text: $viewModel.form.fuelPrice)
+                            .keyboardType(.decimalPad)
+                        AppField("Fuel Unit (liter)", text: $viewModel.form.fuelUnit)
+                            .textInputAutocapitalization(.none)
+                    }
+
+                    formSection("Fill-up Details", systemImage: "drop.fill") {
+                        AppField("Volume Filled (liter)", text: $viewModel.form.volumeFilled)
+                            .keyboardType(.decimalPad)
+                        AppField("Distance Traveled (km)", text: $viewModel.form.distanceTraveled)
+                            .keyboardType(.decimalPad)
+
+                        DatePicker(
+                            "Filled At",
+                            selection: $viewModel.form.filledAt,
+                            displayedComponents: .date
+                        )
+                        .font(.appBody)
+                        .foregroundStyle(Color.cjTextPrimary)
+                        .appInput()
+                        .tint(Color.appShade2)
+                    }
+
+                    formSection("Notes", systemImage: "note.text") {
+                        AppField("Notes (optional)", text: $viewModel.form.notes)
+                            .textInputAutocapitalization(.none)
+                    }
+
+                    if let error = viewModel.errorMessage {
+                        Label(error, systemImage: "xmark.circle.fill")
+                            .font(.appCaption)
+                            .foregroundStyle(Color.appNegative)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 4)
+                    }
+
+                    AppButton(
+                        title: "Submit",
+                        isLoading: viewModel.isLoading
+                    ) {
+                        await viewModel.create()
+                    }
                 }
-                
-                AppButton(
-                    title: "Submit",
-                    isLoading: viewModel.isLoading
-                ) {
-                    await viewModel.create()
-                }
+                .padding(20)
             }
-            .padding()
         }
         .navigationTitle("New Fuel Entry")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.cjBackground, for: .navigationBar)
         .onChange(of: viewModel.didCreateSuccessfully) { _, success in
             guard success else { return }
-            Task {
-                await carDetailViewModel.refresh(carID: viewModel.carID)
-            }
+            Task { await carDetailViewModel.refresh(carID: viewModel.carID) }
             dismiss()
+        }
+    }
+
+    private func formSection<Content: View>(
+        _ title: String,
+        systemImage: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: systemImage)
+                    .font(.appSubheadline)
+                    .foregroundStyle(Color.appShade2)
+                Text(title)
+                    .font(.appHeadline)
+                    .foregroundStyle(Color.cjTextPrimary)
+            }
+            .padding(.leading, 4)
+
+            VStack(spacing: 10) {
+                content()
+            }
+            .padding(16)
+            .appCard()
         }
     }
 }
@@ -54,80 +129,6 @@ struct FuelEntryCreateView: View {
 #Preview {
     NavigationStack {
         FuelEntryCreateView(carID: "", fuelRepository: MockFuelRepository(), repository: MockFuelEntryRepository())
-    }
-}
-
-private extension FuelEntryCreateView {
-    var formSection: some View {
-        VStack(spacing: 16) {
-            TextField("Odometer Reading", text: $viewModel.form.odometerReading)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Reading Unit (km)", text: $viewModel.form.readingUnit)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Fuel Type", text: $viewModel.form.fuelType)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Fuel Brand", text: $viewModel.form.fuelBrand)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            FuelNameDropdown(fuelName: $viewModel.form.fuelName, viewModel: viewModel)
-            
-            TextField("Fuel Price (Rp)", text: $viewModel.form.fuelPrice)
-                .keyboardType(.decimalPad)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Fuel Unit (liter)", text: $viewModel.form.fuelUnit)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Distance Traveled", text: $viewModel.form.distanceTraveled)
-                .keyboardType(.decimalPad)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Volume Filled (liter)", text: $viewModel.form.volumeFilled)
-                .keyboardType(.decimalPad)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            DatePicker(
-                "Filled At",
-                selection: $viewModel.form.filledAt,
-                displayedComponents: .date
-            )
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            
-            TextField("Notes (optional)", text: $viewModel.form.notes)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-        }
+            .environmentObject(CarDetailViewModel(repository: MockCarRepository()))
     }
 }

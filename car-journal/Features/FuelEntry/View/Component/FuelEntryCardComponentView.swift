@@ -9,28 +9,52 @@ import SwiftUI
 
 struct FuelEntryCardComponentView: View {
     let fuelEntry: FuelEntryResponse
-    
+
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(fuelEntry.filledAt, style: .date)
-                    .font(.subheadline)
-                Text(FuelFormatter.distanceTraveledKm(fuelEntry.distanceTraveled))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        HStack(alignment: .center, spacing: 12) {
+            // Date column
+            VStack(spacing: 2) {
+                Text(fuelEntry.filledAt, format: .dateTime.day().month(.abbreviated))
+                    .font(.appHeadline)
+                    .foregroundStyle(Color.cjTextPrimary)
+                Text(fuelEntry.filledAt, format: .dateTime.year())
+                    .font(.appCaption)
+                    .foregroundStyle(Color.cjTextSecondary)
             }
-            
+            .frame(width: 44)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 6)
+            .background(Color.appShade1.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            // Middle info
+            VStack(alignment: .leading, spacing: 3) {
+                Text(fuelEntry.fuelName.isEmpty ? "\(fuelEntry.fuelBrand) \(fuelEntry.fuelType)" : fuelEntry.fuelName)
+                    .font(.appSubheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.cjTextPrimary)
+                    .lineLimit(1)
+
+                HStack(spacing: 8) {
+                    Label(FuelFormatter.distanceTraveledKm(fuelEntry.distanceTraveled), systemImage: "road.lanes")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.cjTextSecondary)
+                    Label(FuelFormatter.volumeLiter(fuelEntry.volumeFilled), systemImage: "drop.fill")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.cjTextSecondary)
+                }
+            }
+
             Spacer()
-            
-            VStack(alignment: .trailing, spacing: 4) {
+
+            // Efficiency
+            VStack(alignment: .trailing, spacing: 2) {
                 Text(FuelFormatter.kmPerLiter(fuelEntry.fuelConsumption))
-                    .font(.subheadline)
+                    .font(.appSubheadline)
                     .fontWeight(.semibold)
-                
-                Text(FuelFormatter.volumeLiter(fuelEntry.volumeFilled))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.cjTextPrimary)
             }
         }
+        .padding(.vertical, 4)
     }
 }

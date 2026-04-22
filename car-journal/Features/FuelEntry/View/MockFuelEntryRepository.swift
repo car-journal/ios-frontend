@@ -27,4 +27,8 @@ final class MockFuelEntryRepository: FuelEntryRepositoryProtocol {
         let fuelEntry = FuelEntryResponse.mockFuelEntry
         return fuelEntry
     }
+    
+    func update(fuelEntryID: String, payload: FuelEntryUpdateRequest) async throws -> MutationResponse {
+        return MutationResponse(success: true)
+    }
 }

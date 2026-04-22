@@ -33,4 +33,14 @@ final class CarRepositoryImpl: CarRepositoryProtocol {
             throw error
         }
     }
+    
+    func update(carID: String, payload: CarUpdateRequest) async throws -> MutationResponse {
+        do {
+            let token = try authManager.requireAccessToken()
+            let endpoint = CarEndpoint.update(carID: carID, payload: payload, token: token)
+            return try await apiClient.send(endpoint)
+        } catch {
+            throw error
+        }
+    }
 }

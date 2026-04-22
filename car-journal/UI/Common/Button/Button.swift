@@ -12,7 +12,7 @@ struct AppButton: View {
     let isLoading: Bool
     let isDisabled: Bool
     let action: () async -> Void
-    
+
     init(
         title: String,
         isLoading: Bool = false,
@@ -24,29 +24,35 @@ struct AppButton: View {
         self.isDisabled = isDisabled
         self.action = action
     }
-    
+
+    private var isInactive: Bool { isLoading || isDisabled }
+
+    private var labelColor: Color { isInactive ? Color.cjTextSecondary : Color.cjOnPrimary }
+    private var bgColor: Color    { isInactive ? Color.cjSurfaceSecondary : Color.cjPrimary }
+
     var body: some View {
         Button {
-            Task {
-                await action()
-            }
+            Task { await action() }
         } label: {
             ZStack {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                            .tint(.white)
-                    } else {
-                        Text(title)
-                            .fontWeight(.semibold)
-                    }
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(Color.cjOnPrimary)
+                } else {
+                    Text(title)
+                        .font(.appHeadline)
+                        .foregroundStyle(labelColor)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(isLoading ? Color.gray : Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
             }
-        .disabled(isLoading || isDisabled)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(bgColor)
+            )
+        }
+        .disabled(isInactive)
+        .animation(.easeInOut(duration: 0.15), value: isInactive)
     }
 }

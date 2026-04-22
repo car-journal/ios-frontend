@@ -25,13 +25,20 @@ extension CarDetailResponse {
         fuelType: "Petrol",
         registrationYear: nil,
         vehicleOwnershipDocumentNumber: nil,
-        fuelSummary: mockFuelSummary
+        fuelSummary: mockFuelSummary,
+        maintenanceSummary: mockMaintenanceSummary
     )
     
     static let mockFuelSummary: FuelSummary = FuelSummary(
         averageFuelConsumptionRate: 7.5,
         fuelConsumptionRateTrend: 0.2,
+        totalFuelCost: 527_000,
         recentFuelEntries: mockRecentFuelEntries
+    )
+
+    static let mockMaintenanceSummary: MaintenanceSummary = MaintenanceSummary(
+        totalMaintenanceCost: 55_000_000,
+        recentMaintenanceEntries: MaintenanceEntryResponse.mockEntries
     )
     
     static let mockRecentFuelEntries: [FuelEntryResponse] = [
@@ -53,6 +60,7 @@ extension CarDetailResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -72,6 +80,7 @@ extension CarDetailResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -91,6 +100,7 @@ extension CarDetailResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -110,6 +120,7 @@ extension CarDetailResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -129,6 +140,7 @@ extension CarDetailResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         )
     ]
 }

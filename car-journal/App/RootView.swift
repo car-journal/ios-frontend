@@ -10,16 +10,21 @@ import SwiftUI
 struct RootView: View {
     @ObservedObject var authManager: AuthManager
     let container: AppContainer
-    
+
     var body: some View {
-        NavigationStack {
+        ThemeAwareRootView(authManager: authManager, container: container)
+    }
+}
+
+private struct ThemeAwareRootView: View {
+    @ObservedObject var authManager: AuthManager
+    @StateObject private var themeManager = ThemeManager.shared
+    let container: AppContainer
+
+    var body: some View {
+        Group {
             if authManager.isLoggedIn {
-                CarListView(
-                    authManager: authManager,
-                    fuelRepository: container.fuelRepository,
-                    fuelEntryRepository: container.fuelEntryRepository,
-                    repository: container.carRepository
-                )
+                MainTabView(authManager: authManager, container: container)
             } else {
                 LoginView(
                     viewModel: LoginViewModel(
@@ -29,5 +34,6 @@ struct RootView: View {
                 )
             }
         }
+        .preferredColorScheme(themeManager.mode.colorScheme)
     }
 }

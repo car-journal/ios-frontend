@@ -11,8 +11,7 @@ enum CarEndpoint: Endpoint {
     case list(page: Int, token: String)
     case findByID(carID: String, token: String)
     case listOfFuelEntries(carID: String, page: Int, limit: Int, token: String)
-    // TODO: create update case
-//    case update(data)
+    case update(carID: String, payload: CarUpdateRequest, token: String)
 }
 
 extension CarEndpoint {
@@ -24,6 +23,8 @@ extension CarEndpoint {
             return "/v1/internal/cars/\(carID)"
         case let .listOfFuelEntries(carID, _, _, _):
             return "/v1/internal/cars/\(carID)/fuel-entries"
+        case let .update(carID, _, _):
+            return "/v1/internal/cars/\(carID)"
         }
     }
     
@@ -35,6 +36,8 @@ extension CarEndpoint {
             return .get
         case .listOfFuelEntries:
             return .get
+        case .update:
+            return .patch
         }
     }
     
@@ -44,7 +47,8 @@ extension CarEndpoint {
         switch self {
         case let .list(_, t),
              let .findByID(_, t),
-             let .listOfFuelEntries(_, _, _, t):
+             let .listOfFuelEntries(_, _, _, t),
+             let .update(_, _, t):
             token = t
         }
         
@@ -54,7 +58,12 @@ extension CarEndpoint {
     }
     
     var body: (any Encodable)? {
-        nil
+        switch self {
+        case let .update(_, payload, _):
+            return payload
+        default:
+            return nil
+        }
     }
     
     var queryItems: [URLQueryItem]? {
@@ -65,7 +74,12 @@ extension CarEndpoint {
             ]
         case .findByID:
             return nil
-        case .listOfFuelEntries:
+        case let .listOfFuelEntries(_, page, limit, _):
+            return [
+                URLQueryItem(name: "page", value: "\(page)"),
+                URLQueryItem(name: "limit", value: "\(limit)")
+            ]
+        case .update:
             return nil
         }
     }

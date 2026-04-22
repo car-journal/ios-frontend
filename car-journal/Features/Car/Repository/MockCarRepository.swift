@@ -46,4 +46,8 @@ final class MockCarRepository: CarRepositoryProtocol {
         let mockCar: CarDetailResponse = CarDetailResponse.mockCar
         return mockCar
     }
+    
+    func update(carID: String, payload: CarUpdateRequest) async throws -> MutationResponse {
+        return MutationResponse(success: true)
+    }
 }

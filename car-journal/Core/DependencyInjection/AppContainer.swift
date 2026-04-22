@@ -9,31 +9,43 @@ import Foundation
 
 @MainActor
 final class AppContainer {
-    private let baseURL = URL(string: "http://192.168.18.175:8080")!
+    private let baseURL = URL(string: "http://192.168.18.99:8080")!
     let authManager: AuthManager
-    
+
     init() {
         let tokenStore = TokenStore()
         self.authManager = AuthManager(tokenStore: tokenStore)
     }
-    
+
     lazy var apiClient: APIClient = {
         APIClient(baseURL: baseURL)
     }()
-    
+
     lazy var authRepository: AuthRepositoryProtocol = {
         AuthRepositoryImpl(apiClient: apiClient)
     }()
-    
+
     lazy var carRepository: CarRepositoryProtocol = {
         CarRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()
-    
+
     lazy var fuelRepository: FuelRepositoryProtocol = {
         FuelRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()
-    
+
     lazy var fuelEntryRepository: FuelEntryRepositoryProtocol = {
         FuelEntryRepositoryImpl(apiClient: apiClient, authManager: authManager)
+    }()
+
+    lazy var maintenanceEntryRepository: MaintenanceEntryRepositoryProtocol = {
+        MaintenanceEntryRepositoryImpl(apiClient: apiClient, authManager: authManager)
+    }()
+
+    lazy var maintenanceCategoryRepository: MaintenanceCategoryRepositoryProtocol = {
+        MaintenanceCategoryRepositoryImpl(apiClient: apiClient, authManager: authManager)
+    }()
+
+    lazy var userRepository: UserRepositoryProtocol = {
+        UserRepositoryImpl(apiClient: apiClient, authManager: authManager)
     }()
 }

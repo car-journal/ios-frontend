@@ -45,6 +45,7 @@ extension FuelEntryResponse {
         totalPrice: 316200,
         fuelConsumption: 7.94,
         notes: nil,
+        odometerReading: 490
     )
     
     static let mockFuelEntries: [FuelEntryResponse] = [
@@ -66,6 +67,7 @@ extension FuelEntryResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -85,6 +87,7 @@ extension FuelEntryResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -104,6 +107,7 @@ extension FuelEntryResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -123,6 +127,7 @@ extension FuelEntryResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         ),
         FuelEntryResponse (
             id: UUID(),
@@ -142,6 +147,7 @@ extension FuelEntryResponse {
             totalPrice: 316200,
             fuelConsumption: 7.94,
             notes: nil,
+            odometerReading: 490
         )
     ]
 }

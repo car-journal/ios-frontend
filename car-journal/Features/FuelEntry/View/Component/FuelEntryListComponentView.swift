@@ -11,9 +11,9 @@ struct FuelEntryListComponentView: View {
     let fuelEntries: [FuelEntryResponse]
     let fuelRepository: FuelRepositoryProtocol
     let fuelEntryRepository: FuelEntryRepositoryProtocol
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 0) {
             ForEach(Array(fuelEntries.enumerated()), id: \.element.id) { index, entry in
                 NavigationLink {
                     FuelEntryDetailView(
@@ -24,15 +24,15 @@ struct FuelEntryListComponentView: View {
                     )
                 } label: {
                     FuelEntryCardComponentView(fuelEntry: entry)
-                            .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.plain) // keeps card style clean
-                    
-                    if index < fuelEntries.count - 1 {
-                        Divider()
+                }
+                .buttonStyle(.plain)
+
+                if index < fuelEntries.count - 1 {
+                    Divider()
+                        .padding(.leading, 62)
+                        .opacity(0.5)
                 }
             }
         }
-        .frame(maxWidth: .infinity,)
     }
 }

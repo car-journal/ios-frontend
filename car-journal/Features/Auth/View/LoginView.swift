@@ -11,55 +11,98 @@ struct LoginView: View {
     @StateObject private var viewModel: LoginViewModel
     @State private var email = ""
     @State private var password = ""
-    @State private var isValid: Bool = false
-    
+    @State private var isValid = false
+
     init(viewModel: LoginViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            
-            Text("Welcome Back")
-                .font(.largeTitle)
-                .bold()
-            
-            TextField("Email", text: $email)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .onChange(of: email) { _, newValue in
-                    isValid = isValidEmail(newValue)
+        ZStack {
+            Color.cjBackground.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Header
+                VStack(spacing: 12) {
+                    Image(systemName: "car.fill")
+                        .font(.system(size: 48, weight: .semibold))
+                        .foregroundStyle(Color.appShade2)
+
+                    Text("Car Journal")
+                        .font(.appLargeTitle)
+                        .foregroundStyle(Color.cjTextPrimary)
+
+                    Text("Track every fill-up, every kilometre.")
+                        .font(.appSubheadline)
+                        .foregroundStyle(Color.cjTextSecondary)
                 }
+                .padding(.top, 72)
+                .padding(.bottom, 48)
 
-            if !isValid && !email.isEmpty {
-                Text("Invalid email address")
-                    .foregroundColor(.red)
-                    .font(.caption)
-            }
+                // Form card
+                VStack(spacing: 16) {
+                    // Email
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Email")
+                            .font(.appCaption)
+                            .foregroundStyle(Color.cjTextSecondary)
+                            .padding(.leading, 4)
 
-            SecureField("Password", text: $password)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            AppButton(
-                title: "Login",
-                isLoading: viewModel.isLoading,
-                isDisabled: !isValid || password.isEmpty
-            ) {
-                await viewModel.login(email: email, password: password)
-            }
-            
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .font(.caption)
+                        TextField("you@example.com", text: $email)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                            .font(.appBody)
+                            .foregroundStyle(Color.cjTextPrimary)
+                            .appInput()
+                            .onChange(of: email) { _, newValue in
+                                isValid = isValidEmail(newValue)
+                            }
+
+                        if !isValid && !email.isEmpty {
+                            Label("Invalid email address", systemImage: "exclamationmark.circle.fill")
+                                .font(.appCaption)
+                                .foregroundStyle(Color.appNegative)
+                                .padding(.leading, 4)
+                        }
+                    }
+
+                    // Password
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Password")
+                            .font(.appCaption)
+                            .foregroundStyle(Color.cjTextSecondary)
+                            .padding(.leading, 4)
+
+                        SecureField("••••••••", text: $password)
+                            .font(.appBody)
+                            .foregroundStyle(Color.cjTextPrimary)
+                            .appInput()
+                    }
+
+                    if let error = viewModel.errorMessage {
+                        Label(error, systemImage: "xmark.circle.fill")
+                            .font(.appCaption)
+                            .foregroundStyle(Color.appNegative)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 4)
+                    }
+
+                    AppButton(
+                        title: "Sign In",
+                        isLoading: viewModel.isLoading,
+                        isDisabled: !isValid || password.isEmpty
+                    ) {
+                        await viewModel.login(email: email, password: password)
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(24)
+                .appCard()
+                .padding(.horizontal, 24)
+
+                Spacer()
             }
         }
-        .padding()
     }
 }
 
@@ -69,5 +112,5 @@ func isValidEmail(_ email: String) -> Bool {
 }
 
 #Preview {
-    LoginView(viewModel: LoginViewModel(authManager: AuthManager(),repository: MockAuthRepository()))
+    LoginView(viewModel: LoginViewModel(authManager: AuthManager(), repository: MockAuthRepository()))
 }

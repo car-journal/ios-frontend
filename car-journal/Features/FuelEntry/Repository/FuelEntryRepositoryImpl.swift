@@ -43,4 +43,14 @@ final class FuelEntryRepositoryImpl: FuelEntryRepositoryProtocol {
             throw error
         }
     }
+    
+    func update(fuelEntryID: String, payload: FuelEntryUpdateRequest) async throws -> MutationResponse {
+        do {
+            let token = try authManager.requireAccessToken()
+            let endpoint = FuelEntryEndpoint.update(fuelEntryID: fuelEntryID, payload: payload, token: token)
+            return try await apiClient.send(endpoint)
+        } catch {
+            throw error
+        }
+    }
 }

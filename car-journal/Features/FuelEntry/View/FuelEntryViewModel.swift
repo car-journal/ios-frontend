@@ -28,18 +28,12 @@ class FuelEntryViewModel: ObservableObject {
     @Published var errorMessageFindByID: String?
     
     @Published var form = FuelEntryForm()
-//    @Published var odometerReading = ""
-//    @Published var readingUnit = "km"
-//    @Published var fuelType = ""
-//    @Published var fuelBrand = ""
-//    @Published var fuelName = ""
-//    @Published var fuelPrice = ""
-//    @Published var fuelUnit = "liter"
-//    @Published var distanceTraveled = ""
-//    @Published var volumeFilled = ""
-//    @Published var filledAt = ""
-//    @Published var notes = ""
-    
+    @Published var editForm = FuelEntryEditForm()
+    @Published var isUpdating = false
+    @Published var didUpdateSuccessfully = false
+    @Published var errorMessageUpdate: String?
+    @Published var isLoadingNextPage = false
+
     // TODO: remove carID from init, set as Published var instead
     let carID: String
     let fuelRepository: FuelRepositoryProtocol
@@ -100,15 +94,16 @@ class FuelEntryViewModel: ObservableObject {
     
     func listByCarID(carID: String, page: Int?, limit: Int = 10) async {
         fuelEntriesByCarID = []
+        currentPageFuelEntriesByID = page ?? 1
+        hasNextPageFuelEntriesByID = true
         isLoadingFuelEntriesByCarID = true
         errorMessageFuelEntriesByCarID = nil
         defer { isLoadingFuelEntriesByCarID = false }
         
-        let pageToLoad = page ?? currentPageFuelEntriesByID
-        
         do {
-            let response = try await repository.listByCarID(carID: carID, page: pageToLoad, limit: limit)
+            let response = try await repository.listByCarID(carID: carID, page: currentPageFuelEntriesByID, limit: limit)
             fuelEntriesByCarID = response.data
+            hasNextPageFuelEntriesByID = response.meta.hasNext
         } catch {
             self.errorMessageFuelEntriesByCarID = error.localizedDescription
         }
@@ -123,8 +118,47 @@ class FuelEntryViewModel: ObservableObject {
         do {
             let response = try await repository.findByID(fuelEntryID: fuelEntryID)
             fuelEntry = response
+            editForm = FuelEntryEditForm(from: response)
         } catch {
             self.errorMessageFindByID = error.localizedDescription
+        }
+    }
+    
+    func update(fuelEntryID: String) async {
+        if let error = editForm.validate() {
+            errorMessageUpdate = error
+            return
+        }
+        
+        let payload = editForm.toUpdateRequest(carID: carID)
+        isUpdating = true
+        errorMessageUpdate = nil
+        defer { isUpdating = false }
+        
+        do {
+            let response = try await repository.update(fuelEntryID: fuelEntryID, payload: payload)
+            didUpdateSuccessfully = response.success
+        } catch {
+            #if DEBUG
+            print("error updating fuel entry", error)
+            #endif
+            errorMessageUpdate = "Failed to update fuel entry. Please try again later"
+        }
+    }
+    
+    func loadNextPage(carID: String, limit: Int = 10) async {
+        guard hasNextPageFuelEntriesByID && !isLoadingNextPage else { return }
+        currentPageFuelEntriesByID += 1
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
+        
+        do {
+            let response = try await repository.listByCarID(carID: carID, page: currentPageFuelEntriesByID, limit: limit)
+            fuelEntriesByCarID.append(contentsOf: response.data)
+            hasNextPageFuelEntriesByID = response.meta.hasNext
+        } catch {
+            currentPageFuelEntriesByID -= 1
+            self.errorMessageFuelEntriesByCarID = error.localizedDescription
         }
     }
 }

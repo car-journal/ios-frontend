@@ -37,6 +37,7 @@ final class APIClient {
             
             #if DEBUG
             if let raw = String(data: data, encoding: .utf8) {
+                print("Endpoint:", endpoint.path)
                 print("Raw response:", raw)
             }
             #endif

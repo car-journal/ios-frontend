@@ -9,23 +9,23 @@ import Foundation
 
 enum AuthEndpoint: Endpoint {
     case login(email: String, password: String)
+    case register(payload: RegisterRequest)
 }
 
 extension AuthEndpoint {
     var path: String {
         switch self {
-        case .login:
-            return "/v1/external/auth/login"
+        case .login:    return "/v1/external/auth/login"
+        case .register: return "/v1/external/auth/register"
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
-        case .login:
-            return .post
+        case .login, .register: return .post
         }
     }
-    
+
     var body: (any Encodable)? {
         switch self {
         case let .login(email, password):
@@ -33,8 +33,10 @@ extension AuthEndpoint {
                 email: email,
                 password: password,
                 passwordConfirmation: password,
-                clientSecret: "local_secret" // create env variable
+                clientSecret: AppConfig.clientSecret
             )
+        case let .register(payload):
+            return payload
         }
     }
 }

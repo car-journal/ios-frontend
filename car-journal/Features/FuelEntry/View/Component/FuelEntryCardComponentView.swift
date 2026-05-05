@@ -47,12 +47,15 @@ struct FuelEntryCardComponentView: View {
 
             Spacer()
 
-            // Efficiency
-            VStack(alignment: .trailing, spacing: 2) {
+            // Efficiency + total price
+            VStack(alignment: .trailing, spacing: 3) {
                 Text(FuelFormatter.kmPerLiter(fuelEntry.fuelConsumption))
                     .font(.appSubheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.cjTextPrimary)
+                Text(CurrencyFormatter.format(fuelEntry.totalPrice))
+                    .font(.appCaption)
+                    .foregroundStyle(Color.cjTextSecondary)
             }
         }
         .padding(.vertical, 4)

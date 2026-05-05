@@ -21,7 +21,8 @@ extension MaintenanceEntryResponse {
             name: "Window Tint",
             price: 5_000_000,
             performedAt: mockPerformedAt,
-            notes: nil
+            notes: nil,
+            odometerReading: 1000
         ),
         MaintenanceEntryResponse(
             id: UUID(),
@@ -35,7 +36,8 @@ extension MaintenanceEntryResponse {
             name: "Repaint",
             price: 50_000_000,
             performedAt: mockPerformedAt,
-            notes: "Full body repaint"
+            notes: "Full body repaint",
+            odometerReading: 1000
         )
     ]
 }

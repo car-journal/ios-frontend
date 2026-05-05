@@ -9,6 +9,7 @@ import Foundation
 
 protocol AuthRepositoryProtocol {
     func login(email: String, password: String) async throws -> LoginResponse
+    func register(payload: RegisterRequest) async throws -> MutationResponse
 }
 
 

@@ -10,6 +10,7 @@ import SwiftUI
 struct CarListView: View {
     @ObservedObject var authManager: AuthManager
     @StateObject private var viewModel: CarListViewModel
+    @State private var isShowingCreate = false
     let fuelRepository: FuelRepositoryProtocol
     let fuelEntryRepository: FuelEntryRepositoryProtocol
     let maintenanceRepository: MaintenanceEntryRepositoryProtocol
@@ -42,6 +43,8 @@ struct CarListView: View {
                     LazyVStack(spacing: 14) {
                         if viewModel.isLoading && viewModel.cars.isEmpty {
                             ForEach(0..<5, id: \.self) { _ in CarSkeletonCard() }
+                        } else if let error = viewModel.error, viewModel.cars.isEmpty {
+                            errorState(message: error)
                         } else if viewModel.cars.isEmpty && !viewModel.isLoading {
                             emptyState
                         } else {
@@ -73,8 +76,26 @@ struct CarListView: View {
                 }
             }
             .navigationTitle("My Cars")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.cjBackground, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isShowingCreate = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.appSubheadline)
+                            .foregroundStyle(Color.cjPrimary)
+                    }
+                }
+            }
+            .sheet(isPresented: $isShowingCreate) {
+                CarCreateView(repository: repository) {
+                    viewModel.cars = []
+                    viewModel.hasNextPage = true
+                    Task { await viewModel.fetchCars(page: 1) }
+                }
+            }
             .navigationDestination(for: UUID.self) { carID in
                 CarDetailView(
                     carID: carID.uuidString,
@@ -100,6 +121,39 @@ struct CarListView: View {
             Text("Add your first car to get started.").font(.appSubheadline).foregroundStyle(Color.cjTextSecondary).multilineTextAlignment(.center)
         }
         .padding(.top, 80)
+    }
+
+    private func errorState(message: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 48))
+                .foregroundStyle(Color.appNegative)
+            Text("Failed to load cars")
+                .font(.appTitle2)
+                .foregroundStyle(Color.cjTextPrimary)
+            Text(message)
+                .font(.appSubheadline)
+                .foregroundStyle(Color.cjTextSecondary)
+                .multilineTextAlignment(.center)
+            Button {
+                Task {
+                    viewModel.error = nil
+                    viewModel.hasNextPage = true
+                    await viewModel.fetchCars(page: 1)
+                }
+            } label: {
+                Text("Retry")
+                    .font(.appSubheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.cjOnPrimary)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 10)
+                    .background(Color.cjPrimary)
+                    .clipShape(Capsule())
+            }
+        }
+        .padding(.top, 80)
+        .padding(.horizontal, 32)
     }
 }
 

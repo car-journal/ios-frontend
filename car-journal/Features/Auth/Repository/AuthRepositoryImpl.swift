@@ -14,7 +14,11 @@ final class AuthRepositoryImpl: AuthRepositoryProtocol {
     
     func login(email: String, password: String) async throws -> LoginResponse {
         let endpoint = AuthEndpoint.login(email: email, password: password)
-        
+        return try await apiClient.send(endpoint)
+    }
+
+    func register(payload: RegisterRequest) async throws -> MutationResponse {
+        let endpoint = AuthEndpoint.register(payload: payload)
         return try await apiClient.send(endpoint)
     }
 }

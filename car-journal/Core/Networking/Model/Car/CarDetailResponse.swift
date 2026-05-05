@@ -29,7 +29,8 @@ struct CarDetailResponse: Decodable, Identifiable, Equatable {
 
 struct FuelSummary: Decodable, Equatable {
     let averageFuelConsumptionRate: Double
-    let fuelConsumptionRateTrend: Double?
+    let fuelConsumptionRateIncrease: Double?  // Km/L delta
+    let fuelConsumptionRateTrend: Double?     // percentage delta
     let totalFuelCost: Decimal
     let recentFuelEntries: [FuelEntryResponse]
 }

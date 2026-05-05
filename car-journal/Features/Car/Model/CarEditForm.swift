@@ -74,4 +74,19 @@ extension CarEditForm {
             vehicleOwnershipDocumentNumber: vehicleOwnershipDocumentNumber
         )
     }
+
+    func toCreateRequest() -> CarCreateRequest {
+        CarCreateRequest(
+            brand: brand,
+            model: model,
+            manufactureYear: Int(manufactureYear) ?? 0,
+            cylinderCapacity: Int(cylinderCapacity) ?? 0,
+            vehicleIdentityNumber: vehicleIdentityNumber.isEmpty ? nil : vehicleIdentityNumber,
+            engineNumber: engineNumber.isEmpty ? nil : engineNumber,
+            color: color.isEmpty ? nil : color,
+            fuelType: fuelType,
+            registrationYear: registrationYear.isEmpty ? nil : registrationYear,
+            vehicleOwnershipDocumentNumber: vehicleOwnershipDocumentNumber.isEmpty ? nil : vehicleOwnershipDocumentNumber
+        )
+    }
 }

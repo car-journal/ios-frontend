@@ -7,6 +7,7 @@ import Foundation
 
 enum MaintenanceEntryEndpoint: Endpoint {
     case list(carID: String, name: String?, sorts: String?, page: Int, limit: Int, token: String)
+    case findByID(entryID: String, token: String)
     case create(carID: String, payload: MaintenanceEntryCreateRequest, token: String)
     case update(entryID: String, payload: MaintenanceEntryUpdateRequest, token: String)
     case delete(entryID: String, token: String)
@@ -16,7 +17,9 @@ extension MaintenanceEntryEndpoint {
     var path: String {
         switch self {
         case let .list(carID, _, _, _, _, _):
-            return "/v1/internal/maintenance-entries/\(carID)"
+            return "/v1/internal/maintenance-entries/by-car/\(carID)"
+        case let .findByID(entryID, _):
+            return "/v1/internal/maintenance-entries/\(entryID)"
         case let .create(carID, _, _):
             return "/v1/internal/maintenance-entries/\(carID)"
         case let .update(entryID, _, _):
@@ -28,10 +31,10 @@ extension MaintenanceEntryEndpoint {
 
     var method: HTTPMethod {
         switch self {
-        case .list:   return .get
-        case .create: return .post
-        case .update: return .patch
-        case .delete: return .delete
+        case .list, .findByID: return .get
+        case .create:          return .post
+        case .update:          return .patch
+        case .delete:          return .delete
         }
     }
 
@@ -39,6 +42,7 @@ extension MaintenanceEntryEndpoint {
         let token: String
         switch self {
         case let .list(_, _, _, _, _, t),
+             let .findByID(_, t),
              let .create(_, _, t),
              let .update(_, _, t),
              let .delete(_, t):

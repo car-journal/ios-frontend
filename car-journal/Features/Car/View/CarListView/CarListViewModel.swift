@@ -40,6 +40,9 @@ class CarListViewModel: ObservableObject {
             hasNextPage = response.meta.hasNext
             currentPage = pageToLoad
         } catch {
+            #if DEBUG
+            print("❌ CarListViewModel.fetchCars error:", error)
+            #endif
             self.error = error.localizedDescription
         }
     }

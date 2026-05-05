@@ -194,7 +194,7 @@ struct AllMaintenanceEntriesView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
-            Image(systemName: "wrench.slash").font(.system(size: 44)).foregroundStyle(Color.appShade1)
+            Image(systemName: "minus.plus.batteryblock.slash").font(.system(size: 44)).foregroundStyle(Color.appShade1)
             Text("No maintenance entries").font(.appTitle2).foregroundStyle(Color.cjTextPrimary)
             Text("Tap + to log your first maintenance.").font(.appSubheadline).foregroundStyle(Color.cjTextSecondary)
         }

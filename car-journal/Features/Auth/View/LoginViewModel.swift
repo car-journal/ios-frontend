@@ -14,7 +14,7 @@ final class LoginViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let authManager: AuthManager
-    private let repository: AuthRepositoryProtocol
+    let repository: AuthRepositoryProtocol
     
     init(authManager: AuthManager, repository: AuthRepositoryProtocol) {
         self.repository = repository

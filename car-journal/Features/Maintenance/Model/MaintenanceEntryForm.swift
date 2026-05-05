@@ -20,11 +20,11 @@ struct MaintenanceEntryForm {
 extension MaintenanceEntryForm {
     init(from response: MaintenanceEntryResponse) {
         self.categoryId = response.categoryId.uuidString
-        self.odometerReading = ""
+        self.odometerReading = response.odometerReading.map { String($0) } ?? ""
         self.readingUnit = "km"
         self.brand = response.brand
         self.name = response.name
-        self.price = String(format: "%g", NSDecimalNumber(decimal: response.price).doubleValue)
+        self.price = String(format: "%.0f", NSDecimalNumber(decimal: response.price).doubleValue)
         self.performedAt = response.performedAt
         self.notes = response.notes ?? ""
     }

@@ -43,4 +43,14 @@ final class CarRepositoryImpl: CarRepositoryProtocol {
             throw error
         }
     }
+    
+    func create(payload: CarCreateRequest) async throws -> MutationResponse {
+        do {
+            let token = try authManager.requireAccessToken()
+            let endpoint = CarEndpoint.create(payload: payload, token: token)
+            return try await apiClient.send(endpoint)
+        } catch {
+            throw error
+        }
+    }
 }

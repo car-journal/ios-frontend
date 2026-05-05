@@ -50,4 +50,8 @@ final class MockCarRepository: CarRepositoryProtocol {
     func update(carID: String, payload: CarUpdateRequest) async throws -> MutationResponse {
         return MutationResponse(success: true)
     }
+    
+    func create(payload: CarCreateRequest) async throws -> MutationResponse {
+        return MutationResponse(success: true)
+    }
 }

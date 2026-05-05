@@ -83,6 +83,28 @@ struct FuelEntryDetailView: View {
                             .foregroundStyle(Color.cjTextPrimary)
                             .appInput()
                             .tint(Color.appShade2)
+
+                            // Read-only total price
+                            if let entry = viewModel.fuelEntry {
+                                HStack {
+                                    Text("Total Price")
+                                        .font(.appBody)
+                                        .foregroundStyle(Color.cjTextSecondary)
+                                    Spacer()
+                                    Text(CurrencyFormatter.format(entry.totalPrice))
+                                        .font(.appBody)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(Color.cjTextPrimary)
+                                }
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 12)
+                                .background(Color.cjSurfaceSecondary.opacity(0.5))
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(Color.cjTextSecondary.opacity(0.2), lineWidth: 1)
+                                )
+                            }
                         }
 
                         formSection("Notes", systemImage: "note.text") {

@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 final class AppContainer {
-    private let baseURL = URL(string: "http://192.168.18.99:8080")!
+    private let baseURL = AppConfig.baseURL
     let authManager: AuthManager
 
     init() {

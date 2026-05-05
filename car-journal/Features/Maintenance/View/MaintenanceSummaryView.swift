@@ -88,7 +88,7 @@ struct MaintenanceSummaryView: View {
                     HStack {
                         Spacer()
                         VStack(spacing: 8) {
-                            Image(systemName: "wrench.slash")
+                            Image(systemName: "minus.plus.batteryblock.slash")
                                 .font(.title2)
                                 .foregroundStyle(Color.cjTextSecondary)
                             Text("No maintenance entries yet")

@@ -18,6 +18,12 @@ final class MaintenanceEntryRepositoryImpl: MaintenanceEntryRepositoryProtocol {
         return try await apiClient.send(endpoint)
     }
 
+    func findByID(entryID: String) async throws -> MaintenanceEntryResponse {
+        let token = try authManager.requireAccessToken()
+        let endpoint = MaintenanceEntryEndpoint.findByID(entryID: entryID, token: token)
+        return try await apiClient.send(endpoint)
+    }
+
     func create(carID: String, payload: MaintenanceEntryCreateRequest) async throws -> MutationResponse {
         let token = try authManager.requireAccessToken()
         let endpoint = MaintenanceEntryEndpoint.create(carID: carID, payload: payload, token: token)

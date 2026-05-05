@@ -12,96 +12,115 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isValid = false
+    @State private var isShowingRegister = false
 
     init(viewModel: LoginViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        ZStack {
-            Color.cjBackground.ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.cjBackground.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // Header
-                VStack(spacing: 12) {
-                    Image(systemName: "car.fill")
-                        .font(.system(size: 48, weight: .semibold))
-                        .foregroundStyle(Color.appShade2)
+                VStack(spacing: 0) {
+                    // Header
+                    VStack(spacing: 12) {
+                        Image(systemName: "car.fill")
+                            .font(.system(size: 48, weight: .semibold))
+                            .foregroundStyle(Color.appShade2)
 
-                    Text("Car Journal")
-                        .font(.appLargeTitle)
-                        .foregroundStyle(Color.cjTextPrimary)
-
-                    Text("Track every fill-up, every kilometre.")
-                        .font(.appSubheadline)
-                        .foregroundStyle(Color.cjTextSecondary)
-                }
-                .padding(.top, 72)
-                .padding(.bottom, 48)
-
-                // Form card
-                VStack(spacing: 16) {
-                    // Email
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Email")
-                            .font(.appCaption)
-                            .foregroundStyle(Color.cjTextSecondary)
-                            .padding(.leading, 4)
-
-                        TextField("you@example.com", text: $email)
-                            .keyboardType(.emailAddress)
-                            .autocapitalization(.none)
-                            .font(.appBody)
+                        Text("Car Journal")
+                            .font(.appLargeTitle)
                             .foregroundStyle(Color.cjTextPrimary)
-                            .appInput()
-                            .onChange(of: email) { _, newValue in
-                                isValid = isValidEmail(newValue)
-                            }
 
-                        if !isValid && !email.isEmpty {
-                            Label("Invalid email address", systemImage: "exclamationmark.circle.fill")
+                        Text("Track every fill-up, every kilometre.")
+                            .font(.appSubheadline)
+                            .foregroundStyle(Color.cjTextSecondary)
+                    }
+                    .padding(.top, 72)
+                    .padding(.bottom, 48)
+
+                    // Form card
+                    VStack(spacing: 16) {
+                        // Email
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Email")
+                                .font(.appCaption)
+                                .foregroundStyle(Color.cjTextSecondary)
+                                .padding(.leading, 4)
+
+                            TextField("you@example.com", text: $email)
+                                .keyboardType(.emailAddress)
+                                .autocapitalization(.none)
+                                .font(.appBody)
+                                .foregroundStyle(Color.cjTextPrimary)
+                                .appInput()
+                                .onChange(of: email) { _, newValue in
+                                    isValid = isValidEmail(newValue)
+                                }
+
+                            if !isValid && !email.isEmpty {
+                                Label("Invalid email address", systemImage: "exclamationmark.circle.fill")
+                                    .font(.appCaption)
+                                    .foregroundStyle(Color.appNegative)
+                                    .padding(.leading, 4)
+                            }
+                        }
+
+                        // Password
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Password")
+                                .font(.appCaption)
+                                .foregroundStyle(Color.cjTextSecondary)
+                                .padding(.leading, 4)
+
+                            SecureField("••••••••", text: $password)
+                                .font(.appBody)
+                                .foregroundStyle(Color.cjTextPrimary)
+                                .appInput()
+                        }
+
+                        if let error = viewModel.errorMessage {
+                            Label(error, systemImage: "xmark.circle.fill")
                                 .font(.appCaption)
                                 .foregroundStyle(Color.appNegative)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.leading, 4)
                         }
-                    }
 
-                    // Password
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Password")
-                            .font(.appCaption)
-                            .foregroundStyle(Color.cjTextSecondary)
-                            .padding(.leading, 4)
+                        AppButton(
+                            title: "Sign In",
+                            isLoading: viewModel.isLoading,
+                            isDisabled: !isValid || password.isEmpty
+                        ) {
+                            await viewModel.login(email: email, password: password)
+                        }
+                        .padding(.top, 4)
 
-                        SecureField("••••••••", text: $password)
-                            .font(.appBody)
-                            .foregroundStyle(Color.cjTextPrimary)
-                            .appInput()
+                        // Register CTA
+                        NavigationLink {
+                            RegisterView(repository: viewModel.repository)
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("Don't have an account?")
+                                    .foregroundStyle(Color.cjTextSecondary)
+                                Text("Create one")
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color.cjPrimary)
+                            }
+                            .font(.appSubheadline)
+                        }
+                        .padding(.top, 4)
                     }
+                    .padding(24)
+                    .appCard()
+                    .padding(.horizontal, 24)
 
-                    if let error = viewModel.errorMessage {
-                        Label(error, systemImage: "xmark.circle.fill")
-                            .font(.appCaption)
-                            .foregroundStyle(Color.appNegative)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 4)
-                    }
-
-                    AppButton(
-                        title: "Sign In",
-                        isLoading: viewModel.isLoading,
-                        isDisabled: !isValid || password.isEmpty
-                    ) {
-                        await viewModel.login(email: email, password: password)
-                    }
-                    .padding(.top, 4)
+                    Spacer()
                 }
-                .padding(24)
-                .appCard()
-                .padding(.horizontal, 24)
-
-                Spacer()
             }
+            .navigationBarHidden(true)
         }
     }
 }

@@ -27,6 +27,7 @@ struct FuelSummaryView: View {
 
             AverageFuelCard(
                 rate: fuelSummary.averageFuelConsumptionRate,
+                increase: fuelSummary.fuelConsumptionRateIncrease,
                 trend: fuelSummary.fuelConsumptionRateTrend,
                 totalCost: fuelSummary.totalFuelCost
             )
@@ -46,7 +47,8 @@ struct FuelSummaryView: View {
 // MARK: - Average fuel efficiency card
 private struct AverageFuelCard: View {
     let rate: Double
-    let trend: Double?
+    let increase: Double?   // Km/L delta
+    let trend: Double?      // percentage delta
     let totalCost: Decimal
 
     private struct TrendStyle {
@@ -54,6 +56,7 @@ private struct AverageFuelCard: View {
         let color: Color
     }
 
+    // Direction is determined by trend (percentage); increase follows the same sign
     private var trendStyle: TrendStyle? {
         guard let trend else { return nil }
         if trend > 0 { return TrendStyle(icon: "arrow.up.right", color: .appPositive) }
@@ -76,15 +79,29 @@ private struct AverageFuelCard: View {
 
                 Spacer()
 
-                // Trend badge
-                if let trend, let style = trendStyle {
-                    HStack(spacing: 4) {
+                // Trend badge — one arrow, two lines of data
+                if let style = trendStyle {
+                    HStack(alignment: .center, spacing: 8) {
                         Image(systemName: style.icon)
-                        Text(FuelFormatter.kmPerLiter(abs(trend)))
+                            .font(.appHeadline)
+                            .foregroundStyle(style.color)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            // Km/L delta
+                            if let increase {
+                                Text(FuelFormatter.kmPerLiter(abs(increase)))
+                                    .font(.appSubheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(style.color)
+                            }
+                            // Percentage delta
+                            if let trend {
+                                Text(String(format: "%.1f%%", abs(trend)))
+                                    .font(.appCaption)
+                                    .foregroundStyle(style.color.opacity(0.8))
+                            }
+                        }
                     }
-                    .font(.appSubheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(style.color)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
                     .background(style.color.opacity(0.10))

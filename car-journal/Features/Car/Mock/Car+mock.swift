@@ -31,7 +31,8 @@ extension CarDetailResponse {
     
     static let mockFuelSummary: FuelSummary = FuelSummary(
         averageFuelConsumptionRate: 7.5,
-        fuelConsumptionRateTrend: 0.2,
+        fuelConsumptionRateIncrease: 0.61,
+        fuelConsumptionRateTrend: 17.2,
         totalFuelCost: 527_000,
         recentFuelEntries: mockRecentFuelEntries
     )

@@ -20,9 +20,13 @@ extension JSONDecoder {
                 return Date(timeIntervalSince1970: timestamp)
             }
 
-            // 2. Try ISO8601
+            // 2. Try ISO8601 with fractional seconds: "2026-04-08T00:03:41.339246+07:00"
+            // Then without: "2026-04-06T15:44:00+07:00"
             if let dateString = try? container.decode(String.self) {
                 if let date = ISO8601DateFormatter.backend.date(from: dateString) {
+                    return date
+                }
+                if let date = ISO8601DateFormatter.backendNoFraction.date(from: dateString) {
                     return date
                 }
             }

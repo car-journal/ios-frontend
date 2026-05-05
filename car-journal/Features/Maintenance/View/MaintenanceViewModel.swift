@@ -36,6 +36,22 @@ class MaintenanceViewModel: ObservableObject {
         self.categoryRepository = categoryRepository
     }
 
+    // MARK: - Find by ID
+    @Published var currentEntry: MaintenanceEntryResponse?
+    @Published var isLoadingEntry = false
+
+    func findByID(entryID: String) async {
+        isLoadingEntry = true
+        defer { isLoadingEntry = false }
+        do {
+            let response = try await repository.findByID(entryID: entryID)
+            currentEntry = response
+            form = MaintenanceEntryForm(from: response)
+        } catch {
+            errorMessageForm = error.localizedDescription
+        }
+    }
+
     // MARK: - List
     func list(carID: String, name: String?, sorts: String?, page: Int, limit: Int = 10) async {
         guard !isLoadingList else { return }

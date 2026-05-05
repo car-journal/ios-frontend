@@ -10,6 +10,7 @@ import Foundation
 protocol CarRepositoryProtocol {
     func list(page: Int) async throws -> PaginatedResponse<CarListResponse>
     func findByID(carID: String) async throws -> CarDetailResponse
+    func create(payload: CarCreateRequest) async throws -> MutationResponse
     func update(carID: String, payload: CarUpdateRequest) async throws -> MutationResponse
 }
 

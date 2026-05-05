@@ -18,4 +18,5 @@ struct MaintenanceEntryResponse: Decodable, Identifiable, Equatable {
     let price: Decimal
     let performedAt: Date
     let notes: String?
+    let odometerReading: Int?
 }

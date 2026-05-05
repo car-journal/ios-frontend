@@ -15,4 +15,8 @@ final class MockAuthRepository: AuthRepositoryProtocol {
             tokenType: "Bearer"
         )
     }
+
+    func register(payload: RegisterRequest) async throws -> MutationResponse {
+        return MutationResponse(success: true)
+    }
 }
